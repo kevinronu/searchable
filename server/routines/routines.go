@@ -44,7 +44,9 @@ func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincA
 			parsed = 0
 		}
 	}
+	// Upload any remaining emails (less than bulkUploadQuantity) in the last batch
 	if parsed > 0 {
+		log.Printf("TRACE: uploading %d emails\n", parsed)
 		bulk.Records = bulk.Records[:parsed]
 		err := zinc.UploadEmails(bulk, zincAuth)
 		if err != nil {
