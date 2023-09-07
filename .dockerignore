@@ -22,5 +22,7 @@
 **/secrets.dev.yaml
 **/values.dev.yaml
 /server/server
+/server/enron_mail_20110402.tgz
+/server/emails
 LICENSE
 README.md
