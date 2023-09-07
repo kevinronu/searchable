@@ -5,8 +5,35 @@ services:
     build:
       context: .
       dockerfile: ./docker/server/Dockerfile
+    networks:
+      - network
     env_file:
       - .env
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
+    depends_on:
+      - zinc
     restart: unless-stopped
+
+  zinc:
+    image: public.ecr.aws/zinclabs/zinc:latest
+    volumes:
+      - zinc-data:/data
+    networks:
+      - network
+    environment:
+      - ZINC_FIRST_ADMIN_USER=${ZINC_ADMIN_USER}
+      - ZINC_FIRST_ADMIN_PASSWORD=${ZINC_ADMIN_PASSWORD}
+      - ZINC_SERVER_PORT=${ZINC_PORT}
+      - ZINC_DATA_PATH=/data
+      - GIN_MODE=release
+    ports:
+      - ${ZINC_PORT}:${ZINC_PORT}
+    restart: unless-stopped
+
+volumes:
+  zinc-data: {}
+
+networks:
+  network:
+    driver: bridge
