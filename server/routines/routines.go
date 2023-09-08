@@ -28,40 +28,38 @@ func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincA
 		Index:   "emails",
 		Records: make([]models.Email, bulkUploadQuantity),
 	}
-	parsed := 0
-	total := 0
+	count := 0
+	totalUploaded := 0
 
 	for email := range emailsChan {
-		bulk.Records[parsed] = *email
-		parsed++
-		if parsed == bulkUploadQuantity {
-			log.Printf("TRACE: uploading %d emails\n", parsed)
+		bulk.Records[count] = *email
+		count++
+		if count == bulkUploadQuantity {
+			log.Printf("TRACE: uploading %d emails\n", count)
 			err := zinc.UploadEmails(bulk, zincAuth)
 			if err != nil {
 				log.Fatal("FATAL: failed to upload emails: ", err)
 			}
-			total += parsed
-			parsed = 0
+			totalUploaded += count
+			count = 0
 		}
 	}
 	// Upload any remaining emails (less than bulkUploadQuantity) in the last batch
-	if parsed > 0 {
-		log.Printf("TRACE: uploading %d emails\n", parsed)
-		bulk.Records = bulk.Records[:parsed]
+	if count > 0 {
+		log.Printf("TRACE: uploading %d emails\n", count)
+		bulk.Records = bulk.Records[:count]
 		err := zinc.UploadEmails(bulk, zincAuth)
 		if err != nil {
 			log.Fatal("FATAL: failed to upload emails: ", err)
 		}
-		total += parsed
+		totalUploaded += count
 	}
-	log.Printf("INFO: goroutine uploaded %d emails\n", total)
+	log.Printf("INFO: goroutine uploaded %d emails\n", totalUploaded)
 }
 
 func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWorkers int, bulkUploadQuantity int, zincAuth *models.ZincAuth) {
 	pathsChan := make(chan string)
 	emailsChan := make(chan *models.Email)
-	// pathsChan := make(chan string, numParserWorkers)
-	// emailsChan := make(chan *models.Email, bulkUploadQuantity)
 
 	log.Printf("TRACE: spawning %d uploader goroutines", numUploaderWorkers)
 	var wgUploaders sync.WaitGroup
