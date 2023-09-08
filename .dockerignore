@@ -24,5 +24,6 @@
 /server/server
 /server/enron_mail_20110402.tgz
 /server/emails
+/server/profiling
 LICENSE
 README.md

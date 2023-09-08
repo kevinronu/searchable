@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"strconv"
 	"time"
 
@@ -15,6 +16,14 @@ import (
 )
 
 func main() {
+	enableProfiling, _ := strconv.ParseBool(utils.GetEnv("ENABLE_PROFILING"))
+	profilingPortString := utils.GetEnv("PROFILING_PORT")
+	if enableProfiling {
+		go func() {
+			log.Println(http.ListenAndServe("localhost:"+profilingPortString, nil))
+		}()
+	}
+
 	portString := utils.GetEnv("SERVER_PORT")
 	emailsDir := utils.GetEnv("EMAILS_DIR")
 	zincBaseUrl := utils.GetEnv("ZINC_BASEURL")
