@@ -26,7 +26,7 @@ func main() {
 
 	portString := utils.GetEnv("SERVER_PORT")
 	emailsDir := utils.GetEnv("EMAILS_DIR")
-	zincBaseUrl := utils.GetEnv("ZINC_BASEURL")
+	zincHost := utils.GetEnv("ZINC_HOST")
 	zincPort := utils.GetEnv("ZINC_PORT")
 	zincAdminUser := utils.GetEnv("ZINC_ADMIN_USER")
 	zincAdminPassword := utils.GetEnv("ZINC_ADMIN_PASSWORD")
@@ -35,7 +35,7 @@ func main() {
 	bulkUploadQuantity, _ := strconv.Atoi(utils.GetEnv("BULK_UPLOAD_QUANTITY"))
 
 	zincAuth := &models.ZincAuth{
-		BaseUrl:  fmt.Sprintf("http://%s:%s", zincBaseUrl, zincPort),
+		BaseUrl:  fmt.Sprintf("http://%s:%s", zincHost, zincPort),
 		User:     zincAdminUser,
 		Password: zincAdminPassword,
 	}
@@ -43,7 +43,7 @@ func main() {
 	log.Println("INFO: starting to parse and upload emails at dir:", emailsDir)
 	start := time.Now()
 	routines.ParseAndUploadEmails(emailsDir, numUploaderWorkers, numParserWorkers, bulkUploadQuantity, zincAuth)
-	log.Printf("INFO: finished reading and write in %v\n", time.Since(start))
+	log.Printf("INFO: file indexing finished in %v\n", time.Since(start))
 
 	router := chi.NewRouter()
 

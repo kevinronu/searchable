@@ -1,5 +1,7 @@
 .vscode
 *.env
+/emails
+/enron_mail_20110402.tgz
 /server/server
 /server/enron_mail_20110402.tgz
 /server/emails

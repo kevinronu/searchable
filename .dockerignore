@@ -21,6 +21,8 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+/emails
+/enron_mail_20110402.tgz
 /server/server
 /server/enron_mail_20110402.tgz
 /server/emails

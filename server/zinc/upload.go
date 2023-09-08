@@ -10,7 +10,7 @@ import (
 	"github.com/kevinronu/email-indexer/server/models"
 )
 
-func UploadEmails(bulk *models.BulkEmails, auth *models.ZincAuth) error {
+func UploadEmails(bulk *models.BulkEmails, zincAuth *models.ZincAuth) error {
 	const uploadEndpoint = "/api/_bulkv2"
 
 	jsonBytes, err := json.Marshal(*bulk)
@@ -18,11 +18,11 @@ func UploadEmails(bulk *models.BulkEmails, auth *models.ZincAuth) error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", auth.BaseUrl+uploadEndpoint, bytes.NewReader(jsonBytes))
+	req, err := http.NewRequest("POST", zincAuth.BaseUrl+uploadEndpoint, bytes.NewReader(jsonBytes))
 	if err != nil {
 		return err
 	}
-	req.SetBasicAuth(auth.User, auth.Password)
+	req.SetBasicAuth(zincAuth.User, zincAuth.Password)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)

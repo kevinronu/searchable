@@ -5,15 +5,20 @@ services:
     build:
       context: .
       dockerfile: ./docker/server/Dockerfile
+    volumes:
+      - ./${EMAILS_DIR}:/app/${EMAILS_DIR}
     networks:
       - network
     env_file:
       - .env
+    environment:
+      - ENABLE_PROFILING=${ENABLE_PROFILING}
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
+      - ${PROFILING_PORT}:${PROFILING_PORT}
     depends_on:
       - zinc
-    restart: unless-stopped
+    restart: on-failure
 
   zinc:
     image: public.ecr.aws/zinclabs/zinc:latest
