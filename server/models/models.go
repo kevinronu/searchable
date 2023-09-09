@@ -18,7 +18,7 @@ type BulkEmails struct {
 	Records []Email `json:"records"`
 }
 
-type ZincAuth struct {
+type ZincCredentials struct {
 	BaseUrl  string
 	User     string
 	Password string

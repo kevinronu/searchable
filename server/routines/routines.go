@@ -23,7 +23,7 @@ func parseEmailFiles(pathsChan <-chan string, emailsChan chan<- *models.Email) {
 	}
 }
 
-func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincAuth *models.ZincAuth) {
+func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincCredentials models.ZincCredentials) {
 	bulk := &models.BulkEmails{
 		Index:   "emails",
 		Records: make([]models.Email, bulkUploadQuantity),
@@ -36,7 +36,7 @@ func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincA
 		count++
 		if count == bulkUploadQuantity {
 			log.Printf("TRACE: uploading %d emails\n", count)
-			err := zinc.UploadEmails(bulk, zincAuth)
+			err := zinc.UploadEmails(bulk, zincCredentials)
 			if err != nil {
 				log.Fatal("FATAL: failed to upload emails: ", err)
 			}
@@ -48,7 +48,7 @@ func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincA
 	if count > 0 {
 		log.Printf("TRACE: uploading %d emails\n", count)
 		bulk.Records = bulk.Records[:count]
-		err := zinc.UploadEmails(bulk, zincAuth)
+		err := zinc.UploadEmails(bulk, zincCredentials)
 		if err != nil {
 			log.Fatal("FATAL: failed to upload emails: ", err)
 		}
@@ -57,7 +57,7 @@ func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincA
 	log.Printf("INFO: goroutine uploaded %d emails\n", totalUploaded)
 }
 
-func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWorkers int, bulkUploadQuantity int, zincAuth *models.ZincAuth) {
+func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWorkers int, bulkUploadQuantity int, zincAuth models.ZincCredentials) {
 	pathsChan := make(chan string)
 	emailsChan := make(chan *models.Email)
 
