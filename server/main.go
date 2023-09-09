@@ -13,6 +13,7 @@ import (
 	"github.com/kevinronu/email-indexer/server/models"
 	"github.com/kevinronu/email-indexer/server/routines"
 	"github.com/kevinronu/email-indexer/server/utils"
+	"github.com/kevinronu/email-indexer/server/zinc"
 )
 
 func main() {
@@ -26,24 +27,48 @@ func main() {
 
 	portString := utils.GetEnv("SERVER_PORT")
 	emailsDir := utils.GetEnv("EMAILS_DIR")
+	indexName := utils.GetEnv("INDEX_NAME")
 	zincHost := utils.GetEnv("ZINC_HOST")
 	zincPort := utils.GetEnv("ZINC_PORT")
 	zincAdminUser := utils.GetEnv("ZINC_ADMIN_USER")
 	zincAdminPassword := utils.GetEnv("ZINC_ADMIN_PASSWORD")
+	removeIndexIfExists, _ := strconv.ParseBool(utils.GetEnv("REMOVE_INDEX_If_EXISTS"))
 	numUploaderWorkers, _ := strconv.Atoi(utils.GetEnv("NUM_UPLOADER_WORKERS"))
 	numParserWorkers, _ := strconv.Atoi(utils.GetEnv("NUM_PARSER_WORKERS"))
 	bulkUploadQuantity, _ := strconv.Atoi(utils.GetEnv("BULK_UPLOAD_QUANTITY"))
 
-	zincAuth := &models.ZincAuth{
+	zincCredentials := models.ZincCredentials{
 		BaseUrl:  fmt.Sprintf("http://%s:%s", zincHost, zincPort),
 		User:     zincAdminUser,
 		Password: zincAdminPassword,
 	}
 
-	log.Println("INFO: starting to parse and upload emails at dir:", emailsDir)
-	start := time.Now()
-	routines.ParseAndUploadEmails(emailsDir, numUploaderWorkers, numParserWorkers, bulkUploadQuantity, zincAuth)
-	log.Printf("INFO: file indexing finished in %v\n", time.Since(start))
+	indexExists, err := zinc.CheckIfIndexExists(indexName, zincCredentials)
+	if err != nil {
+		log.Fatal("FATAL: ", err)
+	}
+
+	if indexExists {
+		log.Printf("INFO: index name %s already exists.\n", indexName)
+		if removeIndexIfExists {
+			log.Printf("INFO: deleting %s index\n", indexName)
+			if err := zinc.DeleteIndex(indexName, zincCredentials); err != nil {
+				log.Fatal("FATAL: ", err)
+			}
+			// Update indexExists value after delete
+			indexExists, err = zinc.CheckIfIndexExists(indexName, zincCredentials)
+			if err != nil {
+				log.Fatal("FATAL: ", err)
+			}
+		}
+	}
+
+	if !indexExists {
+		log.Println("INFO: starting to parse and upload emails at dir:", emailsDir)
+		start := time.Now()
+		routines.ParseAndUploadEmails(emailsDir, numUploaderWorkers, numParserWorkers, bulkUploadQuantity, zincCredentials)
+		log.Printf("INFO: file indexing finished in %v\n", time.Since(start))
+	}
 
 	router := chi.NewRouter()
 
@@ -69,7 +94,7 @@ func main() {
 
 	log.Printf("Server starting and port %s", portString)
 
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
