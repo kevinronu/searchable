@@ -64,6 +64,11 @@ func main() {
 	}
 
 	if !indexExists {
+		log.Println("INFO: creating index for:", indexName)
+		err = zinc.CreateIndex(indexName, zincCredentials)
+		if err != nil {
+			log.Fatal("FATAL: ", err)
+		}
 		log.Println("INFO: starting to parse and upload emails at dir:", emailsDir)
 		start := time.Now()
 		routines.ParseAndUploadEmails(emailsDir, numUploaderWorkers, numParserWorkers, bulkUploadQuantity, zincCredentials)
@@ -82,11 +87,15 @@ func main() {
 	}))
 
 	v1Router := chi.NewRouter()
+
 	v1Router.Get("/healthz", handlerReadiness)
 	v1Router.Get("/err", handlerErr)
 
-	router.Mount("/v1", v1Router)
+	v1Router.Get("/emails", handlerReadiness)
+	v1Router.Delete("/emails", handlerReadiness)
+	// v1Router.Post("/emails", handlerReadiness)
 
+	router.Mount("/v1", v1Router)
 	srv := &http.Server{
 		Handler: router,
 		Addr:    ":" + portString,
