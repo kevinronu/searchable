@@ -90,9 +90,9 @@ func main() {
 
 	v1Router.Get("/healthz", handlerReadiness)
 	v1Router.Get("/err", handlerErr)
-	// v1Router.Get("/emails", zincService.middlewareQuery(zincService.GetAllDocuments))
-	v1Router.Delete("/emails", handlerReadiness)
-	// v1Router.Post("/emails", handlerReadiness)
+	v1Router.Get("/emails", zincService.HandlerDocumentsGet)
+	v1Router.Post("/emails", zincService.MiddlewareQuery(zincService.HandlerDocumentsPost))
+	// v1Router.Delete("/emails", handlerReadiness)
 
 	router.Mount("/v1", v1Router)
 	srv := &http.Server{
