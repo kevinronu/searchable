@@ -1,11 +1,15 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/kevinronu/email-indexer/server/utils"
+)
 
 func handlerReadiness(w http.ResponseWriter, r *http.Request) {
-	respondWithJSON(w, 200, map[string]string{"status": "ok"})
+	utils.RespondWithJSON(w, 200, map[string]string{"status": "ok"})
 }
 
 func handlerErr(w http.ResponseWriter, r *http.Request) {
-	respondWithJSON(w, 400, "Something went wrong")
+	utils.RespondWithJSON(w, 400, "Something went wrong")
 }
