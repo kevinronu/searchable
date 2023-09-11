@@ -10,10 +10,10 @@ import (
 	"github.com/kevinronu/email-indexer/server/models"
 )
 
-func UploadEmails(bulk *models.BulkEmails, zincService ZincService) error {
+func UploadEmails(bulk models.BulkEmails, zincService ZincService) error {
 	const uploadEndpoint = "/api/_bulkv2"
 
-	jsonBytes, err := json.Marshal(*bulk)
+	jsonBytes, err := json.Marshal(bulk)
 	if err != nil {
 		return err
 	}

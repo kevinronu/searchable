@@ -10,19 +10,19 @@ import (
 	"github.com/kevinronu/email-indexer/server/models"
 )
 
-func FileToEmail(path string) (*models.Email, error) {
+func FileToEmail(path string) (models.Email, error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return models.Email{}, err
 	}
 	defer file.Close()
 
 	msg, err := mail.ReadMessage(file)
 	if err != nil {
-		return nil, err
+		return models.Email{}, err
 	}
 
-	email := &models.Email{
+	email := models.Email{
 		MessageId: msg.Header.Get("Message-ID"),
 		From:      msg.Header.Get("From"),
 		Subject:   msg.Header.Get("Subject"),
@@ -30,14 +30,14 @@ func FileToEmail(path string) (*models.Email, error) {
 
 	date, err := msg.Header.Date()
 	if err != nil {
-		return nil, err
+		return models.Email{}, err
 	}
 	email.Date = date
 
 	if msg.Header.Get("To") != "" {
 		to, err := msg.Header.AddressList("To")
 		if err != nil {
-			return nil, err
+			return models.Email{}, err
 		}
 		for _, addr := range to {
 			email.To = append(email.To, addr.Address)
@@ -47,7 +47,7 @@ func FileToEmail(path string) (*models.Email, error) {
 	if msg.Header.Get("Cc") != "" {
 		cc, err := msg.Header.AddressList("Cc")
 		if err != nil {
-			return nil, err
+			return models.Email{}, err
 		}
 		for _, addr := range cc {
 			email.Cc = append(email.Cc, addr.Address)
@@ -57,7 +57,7 @@ func FileToEmail(path string) (*models.Email, error) {
 	if msg.Header.Get("Bcc") != "" {
 		bcc, err := msg.Header.AddressList("Bcc")
 		if err != nil {
-			return nil, err
+			return models.Email{}, err
 		}
 		for _, addr := range bcc {
 			email.Bcc = append(email.Bcc, addr.Address)

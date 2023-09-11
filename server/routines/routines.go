@@ -12,7 +12,7 @@ import (
 	"github.com/kevinronu/email-indexer/server/zinc"
 )
 
-func parseEmailFiles(pathsChan <-chan string, emailsChan chan<- *models.Email) {
+func parseEmailFiles(pathsChan <-chan string, emailsChan chan<- models.Email) {
 	for path := range pathsChan {
 		email, err := utils.FileToEmail(path)
 		if err != nil {
@@ -23,8 +23,8 @@ func parseEmailFiles(pathsChan <-chan string, emailsChan chan<- *models.Email) {
 	}
 }
 
-func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincCredentials zinc.ZincService) {
-	bulk := &models.BulkEmails{
+func uploadEmails(emailsChan <-chan models.Email, bulkUploadQuantity int, zincCredentials zinc.ZincService) {
+	bulk := models.BulkEmails{
 		Index:   "emails",
 		Records: make([]models.Email, bulkUploadQuantity),
 	}
@@ -32,7 +32,7 @@ func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincC
 	totalUploaded := 0
 
 	for email := range emailsChan {
-		bulk.Records[count] = *email
+		bulk.Records[count] = email
 		count++
 		if count == bulkUploadQuantity {
 			log.Printf("TRACE: uploading %d emails\n", count)
@@ -59,7 +59,7 @@ func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincC
 
 func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWorkers int, bulkUploadQuantity int, zincAuth zinc.ZincService) {
 	pathsChan := make(chan string)
-	emailsChan := make(chan *models.Email)
+	emailsChan := make(chan models.Email)
 
 	log.Printf("TRACE: spawning %d uploader goroutines", numUploaderWorkers)
 	var wgUploaders sync.WaitGroup
