@@ -23,7 +23,7 @@ func parseEmailFiles(pathsChan <-chan string, emailsChan chan<- *models.Email) {
 	}
 }
 
-func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincCredentials models.ZincCredentials) {
+func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincCredentials zinc.ZincService) {
 	bulk := &models.BulkEmails{
 		Index:   "emails",
 		Records: make([]models.Email, bulkUploadQuantity),
@@ -57,7 +57,7 @@ func uploadEmails(emailsChan <-chan *models.Email, bulkUploadQuantity int, zincC
 	log.Printf("INFO: goroutine uploaded %d emails\n", totalUploaded)
 }
 
-func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWorkers int, bulkUploadQuantity int, zincAuth models.ZincCredentials) {
+func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWorkers int, bulkUploadQuantity int, zincAuth zinc.ZincService) {
 	pathsChan := make(chan string)
 	emailsChan := make(chan *models.Email)
 

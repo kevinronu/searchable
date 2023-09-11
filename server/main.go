@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	_ "net/http/pprof"
 	"strconv"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
-	"github.com/kevinronu/email-indexer/server/models"
 	"github.com/kevinronu/email-indexer/server/routines"
 	"github.com/kevinronu/email-indexer/server/utils"
 	"github.com/kevinronu/email-indexer/server/zinc"
@@ -37,13 +35,14 @@ func main() {
 	numParserWorkers, _ := strconv.Atoi(utils.GetEnv("NUM_PARSER_WORKERS"))
 	bulkUploadQuantity, _ := strconv.Atoi(utils.GetEnv("BULK_UPLOAD_QUANTITY"))
 
-	zincCredentials := models.ZincCredentials{
-		BaseUrl:  fmt.Sprintf("http://%s:%s", zincHost, zincPort),
-		User:     zincAdminUser,
-		Password: zincAdminPassword,
+	zincService := zinc.ZincService{
+		BaseUrl:   fmt.Sprintf("http://%s:%s", zincHost, zincPort),
+		User:      zincAdminUser,
+		Password:  zincAdminPassword,
+		IndexName: indexName,
 	}
 
-	indexExists, err := zinc.CheckIfIndexExists(indexName, zincCredentials)
+	indexExists, err := zincService.CheckIfIndexExists()
 	if err != nil {
 		log.Fatal("FATAL: ", err)
 	}
@@ -52,11 +51,12 @@ func main() {
 		log.Printf("INFO: index name %s already exists.\n", indexName)
 		if removeIndexIfExists {
 			log.Printf("INFO: deleting %s index\n", indexName)
-			if err := zinc.DeleteIndex(indexName, zincCredentials); err != nil {
+			err = zincService.DeleteIndex()
+			if err != nil {
 				log.Fatal("FATAL: ", err)
 			}
 			// Update indexExists value after delete
-			indexExists, err = zinc.CheckIfIndexExists(indexName, zincCredentials)
+			indexExists, err = zincService.CheckIfIndexExists()
 			if err != nil {
 				log.Fatal("FATAL: ", err)
 			}
@@ -65,13 +65,13 @@ func main() {
 
 	if !indexExists {
 		log.Println("INFO: creating index for:", indexName)
-		err = zinc.CreateIndex(indexName, zincCredentials)
+		err = zincService.CreateIndex()
 		if err != nil {
 			log.Fatal("FATAL: ", err)
 		}
 		log.Println("INFO: starting to parse and upload emails at dir:", emailsDir)
 		start := time.Now()
-		routines.ParseAndUploadEmails(emailsDir, numUploaderWorkers, numParserWorkers, bulkUploadQuantity, zincCredentials)
+		routines.ParseAndUploadEmails(emailsDir, numUploaderWorkers, numParserWorkers, bulkUploadQuantity, zincService)
 		log.Printf("INFO: file indexing finished in %v\n", time.Since(start))
 	}
 
@@ -90,8 +90,7 @@ func main() {
 
 	v1Router.Get("/healthz", handlerReadiness)
 	v1Router.Get("/err", handlerErr)
-
-	v1Router.Get("/emails", handlerReadiness)
+	// v1Router.Get("/emails", zincService.middlewareQuery(zincService.GetAllDocuments))
 	v1Router.Delete("/emails", handlerReadiness)
 	// v1Router.Post("/emails", handlerReadiness)
 

@@ -7,17 +7,15 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/kevinronu/email-indexer/server/models"
 )
 
-func CreateIndex(indexName string, zincCredentials models.ZincCredentials) error {
-	indexMapping := models.IndexMapping{
-		Name:        indexName,
+func (zincService ZincService) CreateIndex() error {
+	indexMapping := IndexMapping{
+		Name:        zincService.IndexName,
 		StorageType: "disk",
-		Mappings: models.Properties{
-			Properties: models.MappingProperties{
-				MessageID: models.MappingProperty{
+		Mappings: Properties{
+			Properties: MappingProperties{
+				MessageID: MappingProperty{
 					Type:          "keyword",
 					Index:         true,
 					Store:         true,
@@ -25,7 +23,7 @@ func CreateIndex(indexName string, zincCredentials models.ZincCredentials) error
 					Aggregatable:  false,
 					Highlightable: false,
 				},
-				Date: models.DateMappingProperty{
+				Date: DateMappingProperty{
 					Type:          "date",
 					Format:        "2006-01-02T15:04:05Z07:00",
 					Index:         true,
@@ -34,7 +32,7 @@ func CreateIndex(indexName string, zincCredentials models.ZincCredentials) error
 					Aggregatable:  true,
 					Highlightable: false,
 				},
-				From: models.MappingProperty{
+				From: MappingProperty{
 					Type:          "keyword",
 					Index:         true,
 					Store:         false,
@@ -42,7 +40,7 @@ func CreateIndex(indexName string, zincCredentials models.ZincCredentials) error
 					Aggregatable:  false,
 					Highlightable: false,
 				},
-				To: models.MappingProperty{
+				To: MappingProperty{
 					Type:          "keyword",
 					Index:         true,
 					Store:         false,
@@ -50,7 +48,7 @@ func CreateIndex(indexName string, zincCredentials models.ZincCredentials) error
 					Aggregatable:  false,
 					Highlightable: false,
 				},
-				CC: models.MappingProperty{
+				CC: MappingProperty{
 					Type:          "keyword",
 					Index:         true,
 					Store:         false,
@@ -58,7 +56,7 @@ func CreateIndex(indexName string, zincCredentials models.ZincCredentials) error
 					Aggregatable:  false,
 					Highlightable: false,
 				},
-				BCC: models.MappingProperty{
+				BCC: MappingProperty{
 					Type:          "keyword",
 					Index:         true,
 					Store:         false,
@@ -66,7 +64,7 @@ func CreateIndex(indexName string, zincCredentials models.ZincCredentials) error
 					Aggregatable:  false,
 					Highlightable: false,
 				},
-				Subject: models.MappingProperty{
+				Subject: MappingProperty{
 					Type:          "text",
 					Index:         true,
 					Store:         false,
@@ -74,7 +72,7 @@ func CreateIndex(indexName string, zincCredentials models.ZincCredentials) error
 					Aggregatable:  false,
 					Highlightable: false,
 				},
-				Body: models.MappingProperty{
+				Body: MappingProperty{
 					Type:          "text",
 					Index:         true,
 					Store:         false,
@@ -91,11 +89,11 @@ func CreateIndex(indexName string, zincCredentials models.ZincCredentials) error
 		return fmt.Errorf("Error marshaling indexMapping: %s", err)
 	}
 
-	req, err := http.NewRequest("POST", zincCredentials.BaseUrl+"/api/index", bytes.NewReader(jsonIndexMapping))
+	req, err := http.NewRequest("POST", zincService.BaseUrl+"/api/index", bytes.NewReader(jsonIndexMapping))
 	if err != nil {
 		return err
 	}
-	req.SetBasicAuth(zincCredentials.User, zincCredentials.Password)
+	req.SetBasicAuth(zincService.User, zincService.Password)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -117,12 +115,12 @@ func CreateIndex(indexName string, zincCredentials models.ZincCredentials) error
 	return nil
 }
 
-func DeleteIndex(indexName string, zincCredentials models.ZincCredentials) error {
-	req, err := http.NewRequest("DELETE", zincCredentials.BaseUrl+"/api/index/"+indexName, nil)
+func (zincService ZincService) DeleteIndex() error {
+	req, err := http.NewRequest("DELETE", zincService.BaseUrl+"/api/index/"+zincService.IndexName, nil)
 	if err != nil {
 		return err
 	}
-	req.SetBasicAuth(zincCredentials.User, zincCredentials.Password)
+	req.SetBasicAuth(zincService.User, zincService.Password)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -141,12 +139,12 @@ func DeleteIndex(indexName string, zincCredentials models.ZincCredentials) error
 	return nil
 }
 
-func CheckIfIndexExists(indexName string, zincCredentials models.ZincCredentials) (bool, error) {
-	req, err := http.NewRequest("HEAD", zincCredentials.BaseUrl+"/api/index/"+indexName, nil)
+func (zincService ZincService) CheckIfIndexExists() (bool, error) {
+	req, err := http.NewRequest("HEAD", zincService.BaseUrl+"/api/index/"+zincService.IndexName, nil)
 	if err != nil {
 		return false, err
 	}
-	req.SetBasicAuth(zincCredentials.User, zincCredentials.Password)
+	req.SetBasicAuth(zincService.User, zincService.Password)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
