@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/kevinronu/email-indexer/server/query"
 	"github.com/kevinronu/email-indexer/server/utils"
 )
@@ -32,7 +33,7 @@ func (zincService ZincService) MiddlewareGetAllDocuments(handler getAllDocuments
 
 type searchDocumentHandler func(http.ResponseWriter, *http.Request, query.SearchQuerySettings)
 
-func (zincService ZincService) MiddlewareSearchDocuments(handler searchDocumentHandler) http.HandlerFunc {
+func (zincService ZincService) MiddlewareSearchDocument(handler searchDocumentHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		querySettings := query.SearchQuerySettings{}
 		err := json.NewDecoder(r.Body).Decode(&querySettings)
@@ -48,5 +49,20 @@ func (zincService ZincService) MiddlewareSearchDocuments(handler searchDocumentH
 		}
 
 		handler(w, r, querySettings)
+	}
+}
+
+type deleteDocumentHandler func(http.ResponseWriter, *http.Request, string)
+
+func (zincService ZincService) MiddlewareDeleteDocument(handler deleteDocumentHandler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+
+		if id == "" {
+			utils.RespondWithError(w, http.StatusBadRequest, "Invalid or missing 'id' parameter in the URL")
+			return
+		}
+
+		handler(w, r, id)
 	}
 }
