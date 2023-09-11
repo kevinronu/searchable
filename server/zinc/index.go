@@ -24,13 +24,15 @@ func (zincService ZincService) CreateIndex() error {
 					Highlightable: false,
 				},
 				Date: DateMappingProperty{
-					Type:          "date",
-					Format:        "2006-01-02T15:04:05Z07:00",
-					Index:         true,
-					Store:         false,
-					Sortable:      true,
-					Aggregatable:  true,
-					Highlightable: false,
+					Format: "2006-01-02T15:04:05Z07:00",
+					MappingProperty: MappingProperty{
+						Type:          "keyword",
+						Index:         true,
+						Store:         false,
+						Sortable:      true,
+						Aggregatable:  true,
+						Highlightable: false,
+					},
 				},
 				From: MappingProperty{
 					Type:          "keyword",

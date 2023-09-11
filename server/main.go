@@ -91,7 +91,8 @@ func main() {
 	v1Router.Get("/healthz", handlerReadiness)
 	v1Router.Get("/err", handlerErr)
 	v1Router.Get("/"+indexName, zincService.HandlerDocumentsGet)
-	v1Router.Post("/"+indexName, zincService.MiddlewareQuery(zincService.HandlerDocumentsPost))
+	v1Router.Post("/"+indexName, zincService.MiddlewareGetAllDocuments(zincService.HandlerDocumentsPost))
+	v1Router.Post("/"+indexName+"/search", zincService.MiddlewareSearchDocuments(zincService.HandlerSearchDocumentsPost))
 	// v1Router.Delete("/"+indexName, handlerReadiness)
 
 	router.Mount("/v1", v1Router)

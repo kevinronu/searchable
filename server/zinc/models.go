@@ -17,13 +17,8 @@ type MappingProperty struct {
 }
 
 type DateMappingProperty struct {
-	Type          string `json:"type"`
-	Format        string `json:"format"`
-	Index         bool   `json:"index"`
-	Store         bool   `json:"store"`
-	Sortable      bool   `json:"sortable"`
-	Aggregatable  bool   `json:"aggregatable"`
-	Highlightable bool   `json:"highlightable"`
+	Format string `json:"format"`
+	MappingProperty
 }
 
 type MappingProperties struct {

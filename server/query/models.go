@@ -9,3 +9,8 @@ type QuerySettings struct {
 	Sort       string
 	Pagination QueryPaginationSettings
 }
+
+type SearchQuerySettings struct {
+	Query string
+	QuerySettings
+}
