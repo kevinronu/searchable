@@ -7,5 +7,5 @@ type QueryPaginationSettings struct {
 
 type QuerySettings struct {
 	Sort       string
-	Pagination *QueryPaginationSettings
+	Pagination QueryPaginationSettings
 }
