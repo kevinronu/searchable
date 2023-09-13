@@ -1,23 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import SearchView from "../views/SearchView.vue";
-import EmailView from "../views/EmailView.vue";
+import Home from "../views/Home.vue";
+import Search from "../views/Search.vue";
+import Document from "../views/Document.vue";
 
 const routes = [
   {
     path: "/",
     name: "Home",
-    component: HomeView,
+    component: Home,
   },
   {
     path: "/search/:query",
     name: "Search",
-    component: SearchView,
+    component: Search,
   },
   {
     path: "/document/:documentId",
     name: "Document",
-    component: EmailView,
+    component: Document,
   },
 ];
 
