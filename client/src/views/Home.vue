@@ -7,14 +7,14 @@ import SearchFileIcon from "../components/icons/SearchFileIcon.vue";
 const query = ref("");
 const submit = () => {
   if (query.value == "") return;
-  router.push({ path: `/search/${encodeURIComponent(query.value)}` });
+  router.push({ path: `/search/${encodeURIComponent(query.value)}/page/1` });
 };
 </script>
 
 <template>
-  <main class="min-h-screen grid place-items-center">
+  <main class="flex-auto grid place-items-center">
     <div class="flex flex-wrap items-center justify-center gap-2">
-      <SearchFileIcon class="w-16 pt-2" />
+      <SearchFileIcon class="w-16 h-16 pt-2" />
       <div>
         <h1 class="text-3xl text-pink-600 mb-2">Fast Search</h1>
         <form
@@ -28,7 +28,10 @@ const submit = () => {
             placeholder="Search by word..."
             class="rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded placeholder:text-gray-500 bg-stone-50 dark:bg-stone-500 dark:placeholder:text-gray-400"
           />
-          <button type="submit">
+          <button
+            type="submit"
+            class="focus:outline-none focus:ring focus:ring-blue-400 focus:rounded"
+          >
             <SearchIcon class="w-6 h-6" />
           </button>
         </form>

@@ -10,7 +10,7 @@ const routes = [
     component: Home,
   },
   {
-    path: "/search/:query",
+    path: "/search/:query/page/:currentPage",
     name: "Search",
     component: Search,
   },
