@@ -27,33 +27,36 @@ const props = defineProps({
   },
 });
 
-const initialPage = computed(
-  () => (Math.ceil(props.currentPage / props.maxPagesGenerated) - 1) * 10 + 1
-);
-
+// currentPage = 2
+// totalQuantity = 5
+// quantityPerPage = 20
+// numberOfPages = 0
+// maxPagesGenerated = 10
 const numberOfPages = computed(() =>
   Math.ceil(props.totalQuantity / props.quantityPerPage)
 );
+// numberOfPages = 1
 const remainingPagesToDisplay = computed(() => {
-  const pages = numberOfPages.value - initialPage.value + 1;
+  const pages = numberOfPages.value - props.currentPage + 1;
   return pages > 0 ? pages : 0;
 });
-
+// remainingPagesToDisplay = 1 - 2 + 1 = 0
 const validation = computed(
   () => remainingPagesToDisplay.value > props.maxPagesGenerated
 );
-
+// validation = 0 > 10 = false
 const pagesToDisplay = computed(() =>
   validation.value ? props.maxPagesGenerated : remainingPagesToDisplay.value
 );
+// pagesToDisplay = 0
 </script>
 
 <template>
-  <nav class="mt-4 text-sm">
-    <ul class="flex flex-wrap gap-2 justify-center items-center">
+  <nav class="my-4">
+    <ul class="flex flex-wrap gap-3 justify-center">
       <router-link
-        v-if="initialPage > 1 && remainingPagesToDisplay > 0"
-        :to="`${location}/page/${initialPage - maxPagesGenerated}`"
+        v-if="currentPage > 1 && remainingPagesToDisplay > 0"
+        :to="`${location}/page/${currentPage - 1}`"
         class="cursor-pointer"
       >
         <CursorLeftIcon class="w-6 h-6" />
@@ -61,15 +64,15 @@ const pagesToDisplay = computed(() =>
       <router-link
         v-for="n in pagesToDisplay"
         :key="n"
-        :to="`${location}/page/${initialPage + n - 1}`"
-        class="cursor-pointer py-1 px-1 rounded"
-        active-class="border-2 border-pink-600 dark:border-pink-600 bg-pink-200 dark:bg-pink-900"
+        :to="`${location}/page/${currentPage + n - 1}`"
+        class="cursor-pointer py-1 px-2 border-2"
+        active-class="border-pink-600 bg-pink-100 dark:bg-pink-900"
       >
-        <li>{{ initialPage + n - 1 }}</li>
+        <li>{{ currentPage + n - 1 }}</li>
       </router-link>
       <router-link
         v-if="validation"
-        :to="`${location}/page/${initialPage + maxPagesGenerated}`"
+        :to="`${location}/page/${currentPage + maxPagesGenerated}`"
         class="cursor-pointer"
       >
         <CursorRightIcon class="w-6 h-6" />
