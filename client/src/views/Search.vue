@@ -2,7 +2,6 @@
 import { useRoute, onBeforeRouteUpdate } from "vue-router";
 import { onMounted, ref } from "vue";
 import { Documents, Hits, Body } from "../models/document.model.ts";
-import { BASE_URI } from "../config.ts";
 import MailToIcon from "../components/icons/MailToIcon.vue";
 import MailFromIcon from "../components/icons/MailFromIcon.vue";
 import CalendarIcon from "../components/icons/CalendarIcon.vue";
@@ -12,6 +11,7 @@ const searchResult = ref<Hits>();
 const totalQuantity = ref<number>(0);
 
 const indexName = import.meta.env.VITE_INDEX_NAME;
+const BASE_URI = import.meta.env.VITE_BASE_URI;
 
 function parseDate(date: Date | string): string {
   if (typeof date === "string") {
@@ -109,32 +109,36 @@ onBeforeRouteUpdate(async (to, from) => {
     <div
       class="container m-auto grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5"
     >
-      <div
+      <router-link
         v-for="document in searchResult?.hits"
         :key="document._id"
-        class="border-2 border-pink-600"
+        :to="`/document/${document._id}`"
       >
-        <p class="text-xl font-semibold truncate">
-          {{ document._source.subject }}
-        </p>
-        <p class="text-lg line-clamp-4">
-          {{ document._source.body }}
-        </p>
-        <div class="flex flex-nowrap items-center">
-          <MailFromIcon class="w-6 h-6" />
-          <p class="h-5 truncate">From: {{ document._source.from }}</p>
-        </div>
-        <div class="flex flex-nowrap items-center">
-          <MailToIcon class="w-6 h-6" />
-          <p class="h-5 truncate">To: {{ document._source.to }}</p>
-        </div>
-        <div class="flex flex-nowrap items-center">
-          <CalendarIcon class="w-6 h-6" />
-          <p class="h-5 truncate">
-            {{ parseDate(document._source.date) }}
+        <div
+          class="hover:bg-pink-400 dark:hover:bg-pink-600 border-2 border-pink-600 p-1"
+        >
+          <p class="text-xl font-semibold truncate">
+            {{ document._source.subject }}
           </p>
+          <p class="text-lg line-clamp-3">
+            {{ document._source.body }}
+          </p>
+          <div class="flex flex-nowrap items-center">
+            <MailFromIcon class="w-6 h-6" />
+            <p class="h-5 truncate">From: {{ document._source.from }}</p>
+          </div>
+          <div class="flex flex-nowrap items-center">
+            <MailToIcon class="w-6 h-6" />
+            <p class="h-5 truncate">To: {{ document._source.to }}</p>
+          </div>
+          <div class="flex flex-nowrap items-center">
+            <CalendarIcon class="w-6 h-6" />
+            <p class="h-5 truncate">
+              {{ parseDate(document._source.date) }}
+            </p>
+          </div>
         </div>
-      </div>
+      </router-link>
     </div>
     <Pagination
       :location="`/search/${String(route.params.query)}`"
