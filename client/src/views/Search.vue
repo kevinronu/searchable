@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { useRoute, onBeforeRouteUpdate } from "vue-router";
 import { onMounted, ref } from "vue";
+import { useRoute, onBeforeRouteUpdate } from "vue-router";
+
+import { useDocumentsStore } from "../stores/DocumentsStore";
 import { Documents, Hits, Body } from "../models/document.model.ts";
 import MailToIcon from "../components/icons/MailToIcon.vue";
 import MailFromIcon from "../components/icons/MailFromIcon.vue";
@@ -9,6 +11,8 @@ import Pagination from "../components/Pagination.vue";
 const route = useRoute();
 const searchResult = ref<Hits>();
 const totalQuantity = ref<number>(0);
+
+const documents = useDocumentsStore();
 
 const indexName = import.meta.env.VITE_INDEX_NAME;
 const BASE_URI = import.meta.env.VITE_BASE_URI;
@@ -52,6 +56,7 @@ async function fetchEmails(query: string, currentPage: number) {
     .then((data: Documents) => {
       totalQuantity.value = data.hits.total.value;
       searchResult.value = data.hits;
+      documents.updateHits(data.hits.hits);
     })
     .catch((error) => console.log(error));
 }
