@@ -7,7 +7,10 @@ import SearchFolderIconVue from "./icons/SearchFolderIcon.vue";
     <div
       class="container m-auto flex flex-wrap gap-4 items-center justify-between"
     >
-      <router-link to="/" class="cursor-pointer">
+      <router-link
+        to="/"
+        class="cursor-pointer focus:outline-none focus:ring focus:ring-blue-400 focus:rounded"
+      >
         <h1
           class="text-gray-700 dark:text-gray-200 text-2xl font-medium hover:bg-pink-400 dark:hover:bg-pink-600"
         >

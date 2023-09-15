@@ -56,39 +56,6 @@ async function fetchEmails(query: string, currentPage: number) {
     .catch((error) => console.log(error));
 }
 
-// async function fetchEmails(query: string, currentPage: number): Promise<Hits> {
-//   const body: Body = {
-//     query,
-//     sort: "-date",
-//     pagination: {
-//       from: 20 * (currentPage - 1),
-//       size: 20,
-//     },
-//   };
-
-//   try {
-//     const resp = await fetch(`${BASE_URI}/v1/${indexName}/search`, {
-//       method: "POST",
-//       body: JSON.stringify(body),
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-
-//     if (resp.ok) {
-//       const data: Documents = await resp.json();
-//       totalQuantity.value = data.hits.total.value;
-//       searchResult.value = data.hits;
-//       return data.hits;
-//     } else {
-//       throw new Error("Failed to fetch data");
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// }
-
 onMounted(() => {
   if (route.params.query != "") {
     fetchEmails(String(route.params.query), Number(route.params.currentPage));
@@ -113,6 +80,7 @@ onBeforeRouteUpdate(async (to, from) => {
         v-for="document in searchResult?.hits"
         :key="document._id"
         :to="`/document/${document._id}`"
+        class="focus:outline-none focus:ring focus:ring-blue-400 focus:rounded"
       >
         <div
           class="hover:bg-pink-400 dark:hover:bg-pink-600 border-2 border-pink-600 p-1"
