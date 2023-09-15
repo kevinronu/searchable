@@ -7,8 +7,7 @@ import MailToIcon from "../components/icons/MailToIcon.vue";
 import MailFromIcon from "../components/icons/MailFromIcon.vue";
 import CalendarIcon from "../components/icons/CalendarIcon.vue";
 import Pagination from "../components/Pagination.vue";
-const query = String(useRoute().params.query);
-const currentPage = Number(useRoute().params.currentPage);
+const route = useRoute();
 const searchResult = ref<Hits>();
 const totalQuantity = ref<number>(0);
 
@@ -32,35 +31,9 @@ function parseDate(date: Date | string): string {
   }
 }
 
-// async function fetchEmails() {
-//   const body: Body = {
-//     query: query,
-//     sort: "-date",
-//     pagination: {
-//       from: 20 * (currentPage - 1),
-//       size: 20,
-//     },
-//   };
-
-//   fetch(`${BASE_URI}/v1/${indexName}/search`, {
-//     method: "POST",
-//     body: JSON.stringify(body),
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   })
-//     .then((resp) => resp.json())
-//     .then((data: Documents) => {
-//       totalQuantity.value = data.hits.total.value;
-//       searchResult.value = data.hits;
-//       return data;
-//     })
-//     .catch((error) => console.log(error));
-// }
-
-async function fetchEmails(): Promise<Hits> {
+async function fetchEmails(query: string, currentPage: number) {
   const body: Body = {
-    query: query,
+    query,
     sort: "-date",
     pagination: {
       from: 20 * (currentPage - 1),
@@ -68,39 +41,66 @@ async function fetchEmails(): Promise<Hits> {
     },
   };
 
-  try {
-    const resp = await fetch(`${BASE_URI}/v1/${indexName}/search`, {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (resp.ok) {
-      const data: Documents = await resp.json();
+  fetch(`${BASE_URI}/v1/${indexName}/search`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((resp) => resp.json())
+    .then((data: Documents) => {
       totalQuantity.value = data.hits.total.value;
       searchResult.value = data.hits;
-      return data.hits;
-    } else {
-      throw new Error("Failed to fetch data");
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+    })
+    .catch((error) => console.log(error));
 }
 
+// async function fetchEmails(query: string, currentPage: number): Promise<Hits> {
+//   const body: Body = {
+//     query,
+//     sort: "-date",
+//     pagination: {
+//       from: 20 * (currentPage - 1),
+//       size: 20,
+//     },
+//   };
+
+//   try {
+//     const resp = await fetch(`${BASE_URI}/v1/${indexName}/search`, {
+//       method: "POST",
+//       body: JSON.stringify(body),
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     });
+
+//     if (resp.ok) {
+//       const data: Documents = await resp.json();
+//       totalQuantity.value = data.hits.total.value;
+//       searchResult.value = data.hits;
+//       return data.hits;
+//     } else {
+//       throw new Error("Failed to fetch data");
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// }
+
 onMounted(() => {
-  if (query != "") {
-    fetchEmails();
+  if (route.params.query != "") {
+    fetchEmails(String(route.params.query), Number(route.params.currentPage));
   }
 });
 
 onBeforeRouteUpdate(async (to, from) => {
-  if (to.params.currentPage !== from.params.currentPage) {
-    console.log("Hi");
-    searchResult.value = await fetchEmails();
+  if (
+    to.params.query !== from.params.query ||
+    to.params.currentPage !== from.params.currentPage
+  ) {
+    fetchEmails(String(to.params.query), Number(to.params.currentPage));
   }
 });
 </script>
@@ -137,8 +137,8 @@ onBeforeRouteUpdate(async (to, from) => {
       </div>
     </div>
     <Pagination
-      :location="`/search/${query}`"
-      :current-page="currentPage"
+      :location="`/search/${String(route.params.query)}`"
+      :current-page="Number(route.params.currentPage)"
       :total-quantity="totalQuantity"
       :quantity-per-page="20"
       :max-pages-generated="10"
