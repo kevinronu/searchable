@@ -4,7 +4,9 @@ import { SearchResult } from "../models/document.model";
 
 export const useSearchResultStoreStore = defineStore("searchResultStore", {
   state: () => ({
-    searchResult: {} as SearchResult,
+    searchResult: JSON.parse(
+      localStorage.getItem("searchResult") || "{}"
+    ) as SearchResult,
   }),
   getters: {
     getDocumentById(state) {
@@ -26,6 +28,7 @@ export const useSearchResultStoreStore = defineStore("searchResultStore", {
   actions: {
     updateSearchResult(searchResult: SearchResult) {
       this.searchResult = searchResult;
+      localStorage.setItem("searchResult", JSON.stringify(searchResult));
     },
   },
 });

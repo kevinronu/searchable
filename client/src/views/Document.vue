@@ -49,6 +49,7 @@ function parseDate(date: Date | string): string {
 // }
 
 async function fetchEmails(id: string): Promise<SearchResult> {
+  // console.log("fetch");
   try {
     const response = await fetch(`${BASE_URI}/v1/${indexName}/${id}`);
     if (!response.ok) {
@@ -59,7 +60,7 @@ async function fetchEmails(id: string): Promise<SearchResult> {
     return data;
   } catch (error) {
     console.error(error);
-    throw error; // You can choose to handle the error differently here
+    throw error;
   }
 }
 
@@ -91,7 +92,7 @@ onMounted(async () => {
       <p class="text-xl font-semibold mb-4 text-center">
         {{ document.subject }}
       </p>
-      <p class="text-lg mb-4">
+      <p class="text-lg mb-4 break-all">
         {{ document.body }}
       </p>
       <div class="flex flex-nowrap items-center gap-2">
