@@ -63,7 +63,7 @@ type Document struct {
 	Date    time.Time `json:"date"`
 }
 
-type Documents struct {
-	Total     int        `json:"total"`
-	Documents []Document `json:"documents"`
+type SearchResult struct {
+	TotalFound int        `json:"total_found"`
+	Documents  []Document `json:"documents"`
 }

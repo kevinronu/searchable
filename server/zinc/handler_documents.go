@@ -62,11 +62,11 @@ func (zincService ZincService) HandlerDocumentsGet(w http.ResponseWriter, r *htt
 	}
 
 	documents := utils.ConvertResponseToDocuments(responseJSON)
-	documentsJSON := models.Documents{
-		Total:     responseJSON.Hits.Total.Value,
-		Documents: documents,
+	searchResult := models.SearchResult{
+		TotalFound: responseJSON.Hits.Total.Value,
+		Documents:  documents,
 	}
-	utils.RespondWithJSON(w, http.StatusOK, documentsJSON)
+	utils.RespondWithJSON(w, http.StatusOK, searchResult)
 }
 
 func (zincService ZincService) HandlerDocumentsPost(w http.ResponseWriter, r *http.Request, querySettings query.QuerySettings) {
@@ -117,11 +117,11 @@ func (zincService ZincService) HandlerDocumentsPost(w http.ResponseWriter, r *ht
 	}
 
 	documents := utils.ConvertResponseToDocuments(responseJSON)
-	documentsJSON := models.Documents{
-		Total:     responseJSON.Hits.Total.Value,
-		Documents: documents,
+	searchResult := models.SearchResult{
+		TotalFound: responseJSON.Hits.Total.Value,
+		Documents:  documents,
 	}
-	utils.RespondWithJSON(w, http.StatusOK, documentsJSON)
+	utils.RespondWithJSON(w, http.StatusOK, searchResult)
 }
 
 func (zincService ZincService) HandlerSearchDocumentPost(w http.ResponseWriter, r *http.Request, querySettings query.SearchQuerySettings) {
@@ -175,12 +175,11 @@ func (zincService ZincService) HandlerSearchDocumentPost(w http.ResponseWriter, 
 	}
 
 	documents := utils.ConvertResponseToDocuments(responseJSON)
-	documentsJSON := models.Documents{
-		Total:     responseJSON.Hits.Total.Value,
-		Documents: documents,
+	searchResult := models.SearchResult{
+		TotalFound: responseJSON.Hits.Total.Value,
+		Documents:  documents,
 	}
-
-	utils.RespondWithJSON(w, http.StatusOK, documentsJSON)
+	utils.RespondWithJSON(w, http.StatusOK, searchResult)
 }
 
 func (zincService ZincService) HandlerDocumentGet(w http.ResponseWriter, r *http.Request, id string) {
@@ -231,12 +230,11 @@ func (zincService ZincService) HandlerDocumentGet(w http.ResponseWriter, r *http
 	}
 
 	documents := utils.ConvertResponseToDocuments(responseJSON)
-	documentsJSON := models.Documents{
-		Total:     responseJSON.Hits.Total.Value,
-		Documents: documents,
+	searchResult := models.SearchResult{
+		TotalFound: responseJSON.Hits.Total.Value,
+		Documents:  documents,
 	}
-
-	utils.RespondWithJSON(w, http.StatusOK, documentsJSON)
+	utils.RespondWithJSON(w, http.StatusOK, searchResult)
 }
 
 func (zincService ZincService) HandlerDocumentDelete(w http.ResponseWriter, r *http.Request, id string) {
