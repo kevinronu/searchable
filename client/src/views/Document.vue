@@ -41,7 +41,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="container m-auto" v-if="document">
+  <main class="container m-auto p-4" v-if="document">
     <div class="bg-stone-100 dark:bg-stone-800 shadow-lg rounded-lg p-4">
       <p class="text-xl font-semibold mb-4 text-center">
         {{ document._source.subject }}

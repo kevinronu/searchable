@@ -49,7 +49,7 @@ const pagesToDisplay = computed(() =>
 </script>
 
 <template>
-  <nav class="mt-4 text-sm">
+  <nav class="text-sm">
     <ul class="flex flex-wrap gap-2 justify-center items-center">
       <router-link
         v-if="initialPage > 1 && remainingPagesToDisplay > 0"

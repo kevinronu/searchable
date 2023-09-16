@@ -79,7 +79,7 @@ onBeforeRouteUpdate(async (to, from) => {
 <template>
   <main>
     <div
-      class="container m-auto grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
+      class="container m-auto grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 p-4"
     >
       <router-link
         v-for="document in searchResult?.hits"
