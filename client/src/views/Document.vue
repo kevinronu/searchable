@@ -2,16 +2,18 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
-import { Hit } from "../models/document.model.ts";
-import { useDocumentsStore } from "../stores/DocumentsStore";
+import { Document, SearchResult } from "../models/document.model.ts";
+import { useSearchResultStoreStore } from "../stores/SearchResultStore";
 import ArrowLeftIcon from "../components/icons/ArrowLeftIcon.vue";
 import MailToIcon from "../components/icons/MailToIcon.vue";
 import MailFromIcon from "../components/icons/MailFromIcon.vue";
 import CalendarIcon from "../components/icons/CalendarIcon.vue";
 
+const indexName = import.meta.env.VITE_INDEX_NAME;
+const BASE_URI = import.meta.env.VITE_BASE_URI;
 const route = useRoute();
-const documents = useDocumentsStore();
-const document = ref<Hit>();
+const searchResult = useSearchResultStoreStore();
+const document = ref<Document>();
 
 function parseDate(date: Date | string): string {
   if (typeof date === "string") {
@@ -34,15 +36,51 @@ function parseDate(date: Date | string): string {
   }
 }
 
-// const router = useRouter();
+// async function fetchEmails(id: string) {
+//   // console.log("fetch");
+//   fetch(`${BASE_URI}/v1/${indexName}/${id}`)
+//     .then((resp) => resp.json())
+//     .then((data: SearchResult) => {
+//       // console.log("data", data);
+//       // searchResult.updateSearchResult(data);
+//       return data;
+//     })
+//     .catch((error) => console.log(error));
+// }
 
-// const navigateBack = () => {
-//   router.go(-1); // Navigates back one step in the history stack
-// };
+async function fetchEmails(id: string): Promise<SearchResult> {
+  try {
+    const response = await fetch(`${BASE_URI}/v1/${indexName}/${id}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data for document with ID ${id}`);
+    }
 
-onMounted(() => {
+    const data: SearchResult = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error; // You can choose to handle the error differently here
+  }
+}
+
+onMounted(async () => {
   if (route.params.documentId != "") {
-    document.value = documents.getHitById(String(route.params.documentId));
+    if (searchResult.checkIfEmpty) {
+      fetchEmails(String(route.params.documentId))
+        .then((data: SearchResult) => {
+          searchResult.updateSearchResult(data);
+          document.value = searchResult.getDocumentById(
+            String(route.params.documentId)
+          );
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      document.value = searchResult.getDocumentById(
+        String(route.params.documentId)
+      );
+    }
   }
 });
 </script>
@@ -51,10 +89,10 @@ onMounted(() => {
   <main class="container m-auto p-4 grid place-items-center" v-if="document">
     <div class="bg-stone-100 dark:bg-stone-800 shadow-lg rounded-lg p-4 mb-4">
       <p class="text-xl font-semibold mb-4 text-center">
-        {{ document._source.subject }}
+        {{ document.subject }}
       </p>
       <p class="text-lg mb-4">
-        {{ document._source.body }}
+        {{ document.body }}
       </p>
       <div class="flex flex-nowrap items-center gap-2">
         <MailFromIcon class="w-6 h-6 fill-red-500" />
@@ -63,28 +101,28 @@ onMounted(() => {
         </span>
       </div>
       <p class="mb-4">
-        {{ document._source.from }}
+        {{ document.from }}
       </p>
       <div class="flex flex-nowrap items-center gap-2">
         <MailToIcon class="w-6 h-6" />
         <span class="font-medium text-cyan-700 dark:text-cyan-500">To:</span>
       </div>
       <p class="mb-4">
-        {{ document._source.to ? document._source.to.join(", ") : "" }}
+        {{ document.to ? document.to.join(", ") : "" }}
       </p>
       <div class="flex flex-nowrap items-center gap-2">
         <MailToIcon class="w-6 h-6" />
         <span class="font-medium text-cyan-700 dark:text-cyan-500">CC:</span>
       </div>
       <p class="mb-4">
-        {{ document._source.cc ? document._source.cc.join(", ") : "" }}
+        {{ document.cc ? document.cc.join(", ") : "" }}
       </p>
       <div class="flex flex-nowrap items-center gap-2">
         <CalendarIcon class="w-6 h-6" />
         <span class="font-medium text-cyan-700 dark:text-cyan-500">Date:</span>
       </div>
       <p class="mb-4">
-        {{ parseDate(document._source.date) }}
+        {{ parseDate(document.date) }}
       </p>
     </div>
     <a
