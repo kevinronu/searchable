@@ -27,7 +27,7 @@
         cy="6"
         r="6"
         transform="translate(6 3)"
-        fill="none"
+        fill="white"
         stroke="#000000"
         stroke-linecap="round"
         stroke-linejoin="round"
