@@ -52,9 +52,9 @@ func (zincService ZincService) MiddlewareSearchDocument(handler searchDocumentHa
 	}
 }
 
-type deleteDocumentHandler func(http.ResponseWriter, *http.Request, string)
+type idDocumentHandler func(http.ResponseWriter, *http.Request, string)
 
-func (zincService ZincService) MiddlewareDeleteDocument(handler deleteDocumentHandler) http.HandlerFunc {
+func (zincService ZincService) MiddlewareIdDocument(handler idDocumentHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 
