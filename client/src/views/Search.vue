@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import { useRoute, onBeforeRouteUpdate } from "vue-router";
 
-import { useDocumentsStore } from "../stores/DocumentsStore";
-import { Documents, Hits, Body } from "../models/document.model.ts";
+import { useSearchResultStoreStore } from "../stores/SearchResultStore";
+import { SearchResult, Body } from "../models/document.model.ts";
 import MailToIcon from "../components/icons/MailToIcon.vue";
 import MailFromIcon from "../components/icons/MailFromIcon.vue";
 import CalendarIcon from "../components/icons/CalendarIcon.vue";
 import Pagination from "../components/Pagination.vue";
 const route = useRoute();
-const searchResult = ref<Hits>();
-const totalQuantity = ref<number>(0);
 
-const documents = useDocumentsStore();
+const searchResult = useSearchResultStoreStore();
 
 const indexName = import.meta.env.VITE_INDEX_NAME;
 const BASE_URI = import.meta.env.VITE_BASE_URI;
@@ -53,10 +51,8 @@ async function fetchEmails(query: string, currentPage: number) {
     },
   })
     .then((resp) => resp.json())
-    .then((data: Documents) => {
-      totalQuantity.value = data.hits.total.value;
-      searchResult.value = data.hits;
-      documents.updateHits(data.hits.hits);
+    .then((data: SearchResult) => {
+      searchResult.updateSearchResult(data);
     })
     .catch((error) => console.log(error));
 }
@@ -82,43 +78,44 @@ onBeforeRouteUpdate(async (to, from) => {
       class="container m-auto grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 p-4"
     >
       <router-link
-        v-for="document in searchResult?.hits"
-        :key="document._id"
-        :to="`/document/${document._id}`"
+        v-for="document in searchResult?.getDocuments"
+        :key="document.id"
+        :to="`/document/${document.id}`"
         class="focus:outline-none focus:ring focus:ring-blue-400 focus:rounded"
       >
         <div
           class="bg-zinc-200 dark:bg-zinc-700 hover:bg-pink-400 dark:hover:bg-pink-600 border-2 border-pink-600 p-1"
         >
           <p class="text-xl font-semibold truncate">
-            {{ document._source.subject }}
+            {{ document.subject }}
           </p>
           <p class="text-lg line-clamp-3">
-            {{ document._source.body }}
+            {{ document.body }}
           </p>
           <div class="flex flex-nowrap items-center gap-1">
             <MailFromIcon class="w-6 h-6" />
-            <p class="h-5 truncate">From: {{ document._source.from }}</p>
+            <p class="h-5 truncate">From: {{ document.from }}</p>
           </div>
           <div class="flex flex-nowrap items-center gap-1">
             <MailToIcon class="w-6 h-6" />
             <p class="h-5 truncate">
-              To: {{ document._source.to ? document._source.to[0] : "" }}
+              To: {{ document.to ? document.to[0] : "" }}
             </p>
           </div>
           <div class="flex flex-nowrap items-center gap-1">
             <CalendarIcon class="w-6 h-6" />
             <p class="h-5 truncate">
-              {{ parseDate(document._source.date) }}
+              {{ parseDate(document.date) }}
             </p>
           </div>
         </div>
       </router-link>
     </div>
     <Pagination
+      v-if="searchResult"
       :location="`/search/${String(route.params.query)}`"
       :current-page="Number(route.params.currentPage)"
-      :total-quantity="totalQuantity"
+      :total-quantity="searchResult.getTotal"
       :quantity-per-page="20"
       :max-pages-generated="10"
     />

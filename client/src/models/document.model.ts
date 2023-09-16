@@ -1,46 +1,16 @@
-export type Documents = {
-  _shards: Shards;
-  hits: Hits;
-  timed_out: boolean;
-  took: number;
+export type SearchResult = {
+  total_found: number;
+  documents: Document[];
 };
 
-export type Shards = {
-  failed: number;
-  skipped: number;
-  successful: number;
-  total: number;
-};
-
-export type Hits = {
-  hits: Hit[];
-  max_score: number;
-  total: Total;
-};
-
-export type Hit = {
-  "@timestamp": Date;
-  _id: string;
-  _index: string;
-  _score: number;
-  _source: Source;
-  _type: string;
-};
-
-export type Source = {
-  "@timestamp": Date;
-  bcc: string[];
-  body: string;
-  cc: string[];
-  date: Date;
-  from: string;
-  message_id: string;
+export type Document = {
+  id: string;
   subject: string;
+  from: string;
   to: string[];
-};
-
-export type Total = {
-  value: number;
+  cc: string[];
+  body: string;
+  date: Date;
 };
 
 type Pagination = {
