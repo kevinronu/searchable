@@ -79,7 +79,7 @@ onBeforeRouteUpdate(async (to, from) => {
 <template>
   <main>
     <div
-      class="container m-auto grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5"
+      class="container m-auto grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
     >
       <router-link
         v-for="document in searchResult?.hits"
@@ -88,7 +88,7 @@ onBeforeRouteUpdate(async (to, from) => {
         class="focus:outline-none focus:ring focus:ring-blue-400 focus:rounded"
       >
         <div
-          class="hover:bg-pink-400 dark:hover:bg-pink-600 border-2 border-pink-600 p-1"
+          class="bg-zinc-200 dark:bg-zinc-700 hover:bg-pink-400 dark:hover:bg-pink-600 border-2 border-pink-600 p-1"
         >
           <p class="text-xl font-semibold truncate">
             {{ document._source.subject }}
@@ -96,15 +96,17 @@ onBeforeRouteUpdate(async (to, from) => {
           <p class="text-lg line-clamp-3">
             {{ document._source.body }}
           </p>
-          <div class="flex flex-nowrap items-center">
+          <div class="flex flex-nowrap items-center gap-1">
             <MailFromIcon class="w-6 h-6" />
             <p class="h-5 truncate">From: {{ document._source.from }}</p>
           </div>
-          <div class="flex flex-nowrap items-center">
+          <div class="flex flex-nowrap items-center gap-1">
             <MailToIcon class="w-6 h-6" />
-            <p class="h-5 truncate">To: {{ document._source.to }}</p>
+            <p class="h-5 truncate">
+              To: {{ document._source.to ? document._source.to[0] : "" }}
+            </p>
           </div>
-          <div class="flex flex-nowrap items-center">
+          <div class="flex flex-nowrap items-center gap-1">
             <CalendarIcon class="w-6 h-6" />
             <p class="h-5 truncate">
               {{ parseDate(document._source.date) }}
