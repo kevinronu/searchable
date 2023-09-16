@@ -93,7 +93,8 @@ func main() {
 	v1Router.Get("/"+indexName, zincService.HandlerDocumentsGet)
 	v1Router.Post("/"+indexName, zincService.MiddlewareGetAllDocuments(zincService.HandlerDocumentsPost))
 	v1Router.Post("/"+indexName+"/search", zincService.MiddlewareSearchDocument(zincService.HandlerSearchDocumentPost))
-	v1Router.Delete("/"+indexName+"/{id}", zincService.MiddlewareDeleteDocument(zincService.HandlerDocumentDelete))
+	v1Router.Get("/"+indexName+"/{id}", zincService.MiddlewareIdDocument(zincService.HandlerDocumentGet))
+	v1Router.Delete("/"+indexName+"/{id}", zincService.MiddlewareIdDocument(zincService.HandlerDocumentDelete))
 
 	router.Mount("/v1", v1Router)
 	srv := &http.Server{
