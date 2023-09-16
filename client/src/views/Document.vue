@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 
 import { Hit } from "../models/document.model.ts";
 import { useDocumentsStore } from "../stores/DocumentsStore";
+import ArrowLeftIcon from "../components/icons/ArrowLeftIcon.vue";
 import MailToIcon from "../components/icons/MailToIcon.vue";
 import MailFromIcon from "../components/icons/MailFromIcon.vue";
 import CalendarIcon from "../components/icons/CalendarIcon.vue";
@@ -33,6 +34,12 @@ function parseDate(date: Date | string): string {
   }
 }
 
+// const router = useRouter();
+
+// const navigateBack = () => {
+//   router.go(-1); // Navigates back one step in the history stack
+// };
+
 onMounted(() => {
   if (route.params.documentId != "") {
     document.value = documents.getHitById(String(route.params.documentId));
@@ -41,8 +48,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="container m-auto p-4" v-if="document">
-    <div class="bg-stone-100 dark:bg-stone-800 shadow-lg rounded-lg p-4">
+  <main class="container m-auto p-4 grid place-items-center" v-if="document">
+    <div class="bg-stone-100 dark:bg-stone-800 shadow-lg rounded-lg p-4 mb-4">
       <p class="text-xl font-semibold mb-4 text-center">
         {{ document._source.subject }}
       </p>
@@ -80,5 +87,11 @@ onMounted(() => {
         {{ parseDate(document._source.date) }}
       </p>
     </div>
+    <a
+      href="javascript:history.back()"
+      class="grid place-items-center text-gray-200 bg-stone-100 dark:bg-stone-800 hover:bg-pink-700 font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+    >
+      <ArrowLeftIcon class="h-6 w-6" />
+    </a>
   </main>
 </template>
