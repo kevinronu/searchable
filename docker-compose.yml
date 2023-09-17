@@ -7,11 +7,6 @@ services:
       dockerfile: ./docker/client/Dockerfile
     networks:
       - network
-    # env_file:
-    #   - .env
-    # environment:
-    #   - VITE_INDEX_NAME=${VITE_INDEX_NAME}
-    #   - VITE_BASE_URI=${VITE_BASE_URI}
     ports:
       - ${CLIENT_PORT}:80
     depends_on:

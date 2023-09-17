@@ -1,6 +1,7 @@
 # build stage
 FROM node:18.17.1-alpine3.18 AS build-stage
 WORKDIR /app
+COPY .env ./.env.production
 COPY ./client/package*.json ./
 RUN npm install
 COPY ./client .
