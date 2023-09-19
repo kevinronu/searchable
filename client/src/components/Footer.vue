@@ -3,7 +3,7 @@ import GithubIcon from "./icons/GithubIcon.vue";
 </script>
 
 <template>
-  <footer class="p-4 bg-stone-400 dark:bg-stone-900 mt-6">
+  <footer class="p-4 bg-stone-300 dark:bg-stone-800 mt-6">
     <div class="container m-auto flex flex-wrap justify-between items-center">
       <p>©2023 - Searchable</p>
       <a
