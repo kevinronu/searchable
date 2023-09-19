@@ -42,10 +42,10 @@ func (zincService ZincService) HandlerDocumentsGet(w http.ResponseWriter, r *htt
 	if resp.StatusCode != http.StatusOK {
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Printf("WARNING: ZincSearch responded with code %v and can't read response body: %v", resp.StatusCode, err)
+			fmt.Printf("WARNING: ZincSearch for id: %s, responded with code %v and can't read response body: %v", id, resp.StatusCode, err)
 			utils.RespondWithError(w, resp.StatusCode, fmt.Sprintf("ZincSearch error"))
 		} else {
-			fmt.Printf("WARNING: ZincSearch responded with code %v: %v", resp.StatusCode, string(body))
+			fmt.Printf("WARNING: ZincSearch for id: %s, responded with code %v: %v", id, resp.StatusCode, string(body))
 			utils.RespondWithError(w, resp.StatusCode, fmt.Sprintf("ZincSearch error: %v", string(body)))
 		}
 		return
@@ -88,10 +88,10 @@ func (zincService ZincService) HandlerDocumentsDelete(w http.ResponseWriter, r *
 	if resp.StatusCode != http.StatusOK {
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Printf("WARNING: ZincSearch responded with code %v and can't read response body: %v", resp.StatusCode, err)
+			fmt.Printf("WARNING: ZincSearch for id: %s, responded with code %v and can't read response body: %v", id, resp.StatusCode, err)
 			utils.RespondWithError(w, resp.StatusCode, fmt.Sprintf("ZincSearch error"))
 		} else {
-			fmt.Printf("WARNING: ZincSearch responded with code %v: %v", resp.StatusCode, string(body))
+			fmt.Printf("WARNING: ZincSearch for id: %s, responded with code %v: %v", id, resp.StatusCode, string(body))
 			utils.RespondWithError(w, resp.StatusCode, fmt.Sprintf("ZincSearch error: %v", string(body)))
 		}
 		return
