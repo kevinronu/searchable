@@ -26,7 +26,7 @@ func (zincService ZincService) CreateIndex() error {
 				Date: DateMappingProperty{
 					Format: "2006-01-02T15:04:05Z07:00",
 					MappingProperty: MappingProperty{
-						Type:          "keyword",
+						Type:          "date",
 						Index:         true,
 						Store:         false,
 						Sortable:      true,
