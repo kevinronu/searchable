@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { watch } from "vue";
+import { onMounted, watch } from "vue";
+
 import Footer from "./components/Footer.vue";
 import Header from "./components/Header.vue";
-import { useThemeStore } from "./stores/ThemeStore"; // Adjust the import path accordingly
+import { useThemeStore } from "./stores/ThemeStore";
 
 const themeStore = useThemeStore();
 
@@ -16,6 +17,12 @@ watch(
     }
   }
 );
+
+onMounted(() => {
+  if (themeStore.isDarkMode) {
+    document.documentElement.classList.add("dark");
+  }
+});
 </script>
 
 <template>

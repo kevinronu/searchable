@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+
 import router from "../router/index.ts";
 import SearchIcon from "../components/icons/SearchIcon.vue";
 import SearchFileIcon from "../components/icons/SearchFileIcon.vue";
