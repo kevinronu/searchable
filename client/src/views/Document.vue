@@ -2,72 +2,33 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
-import { Document, SearchResult } from "../models/document.model.ts";
-import { useSearchResultStore } from "../stores/SearchResultStore";
 import ArrowLeftIcon from "../components/icons/ArrowLeftIcon.vue";
-import MailToIcon from "../components/icons/MailToIcon.vue";
 import MailFromIcon from "../components/icons/MailFromIcon.vue";
 import CalendarIcon from "../components/icons/CalendarIcon.vue";
+import MailToIcon from "../components/icons/MailToIcon.vue";
+import { Document, SearchResult } from "../models/document.model.ts";
+import { useSearchResultStore } from "../stores/SearchResultStore";
+import { getDocument } from "../services/documents-service";
+import { parseDate } from "../utils/utils";
 
-const indexName = import.meta.env.VITE_INDEX_NAME;
-const BASE_URI = import.meta.env.VITE_BASE_URI;
 const route = useRoute();
 const searchResult = useSearchResultStore();
 const document = ref<Document>();
 
-function parseDate(date: Date | string): string {
-  if (typeof date === "string") {
-    date = new Date(date);
-  }
+const options: Intl.DateTimeFormatOptions = {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone: "UTC",
+  hour: "2-digit",
+  minute: "2-digit",
+};
 
-  if (date instanceof Date && !isNaN(date.getTime())) {
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      timeZone: "UTC",
-      hour: "2-digit",
-      minute: "2-digit",
-    };
-    return date.toLocaleDateString("en-US", options);
-  } else {
-    return "Invalid Date";
-  }
-}
-
-// async function fetchEmails(id: string) {
-//   // console.log("fetch");
-//   fetch(`${BASE_URI}/v1/${indexName}/${id}`)
-//     .then((resp) => resp.json())
-//     .then((data: SearchResult) => {
-//       // console.log("data", data);
-//       // searchResult.updateSearchResult(data);
-//       return data;
-//     })
-//     .catch((error) => console.log(error));
-// }
-
-async function fetchEmails(id: string): Promise<SearchResult> {
-  // console.log("fetch");
-  try {
-    const response = await fetch(`${BASE_URI}/v1/${indexName}/${id}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch data for document with ID ${id}`);
-    }
-
-    const data: SearchResult = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-
-onMounted(async () => {
+onMounted(() => {
   if (route.params.documentId != "") {
     if (searchResult.checkIfEmpty) {
-      fetchEmails(String(route.params.documentId))
+      getDocument(String(route.params.documentId))
         .then((data: SearchResult) => {
           searchResult.updateSearchResult(data);
           document.value = searchResult.getDocumentById(
@@ -123,7 +84,7 @@ onMounted(async () => {
         <span class="font-medium text-cyan-700 dark:text-cyan-500">Date:</span>
       </div>
       <p class="mb-4">
-        {{ parseDate(document.date) }}
+        {{ parseDate(document.date, options) }}
       </p>
     </div>
     <a

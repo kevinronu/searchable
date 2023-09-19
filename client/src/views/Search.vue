@@ -2,64 +2,31 @@
 import { onMounted } from "vue";
 import { useRoute, onBeforeRouteUpdate } from "vue-router";
 
+import { parseDate } from "../utils/utils";
+import { searchDocument } from "../services/documents-service";
 import { useSearchResultStore } from "../stores/SearchResultStore";
-import { SearchResult, Body } from "../models/document.model.ts";
+import { SearchResult } from "../models/document.model.ts";
 import MailToIcon from "../components/icons/MailToIcon.vue";
 import MailFromIcon from "../components/icons/MailFromIcon.vue";
 import CalendarIcon from "../components/icons/CalendarIcon.vue";
 import Pagination from "../components/Pagination.vue";
 const route = useRoute();
 
+const options: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
+  timeZone: "UTC",
+};
 const searchResult = useSearchResultStore();
-
-const indexName = import.meta.env.VITE_INDEX_NAME;
-const BASE_URI = import.meta.env.VITE_BASE_URI;
-
-function parseDate(date: Date | string): string {
-  if (typeof date === "string") {
-    date = new Date(date);
-  }
-
-  if (date instanceof Date && !isNaN(date.getTime())) {
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-      timeZone: "UTC",
-    };
-    return date.toLocaleDateString("en-US", options);
-  } else {
-    return "Invalid Date";
-  }
-}
-
-async function fetchEmails(query: string, currentPage: number) {
-  const body: Body = {
-    query,
-    sort: "-date",
-    pagination: {
-      from: 20 * (currentPage - 1),
-      size: 20,
-    },
-  };
-
-  fetch(`${BASE_URI}/v1/${indexName}/search`, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((resp) => resp.json())
-    .then((data: SearchResult) => {
-      searchResult.updateSearchResult(data);
-    })
-    .catch((error) => console.log(error));
-}
 
 onMounted(() => {
   if (route.params.query != "") {
-    fetchEmails(String(route.params.query), Number(route.params.currentPage));
+    searchDocument(String(route.params.query), Number(route.params.currentPage))
+      .then((data: SearchResult) => {
+        searchResult.updateSearchResult(data);
+      })
+      .catch((error) => console.log(error));
   }
 });
 
@@ -68,7 +35,11 @@ onBeforeRouteUpdate(async (to, from) => {
     to.params.query !== from.params.query ||
     to.params.currentPage !== from.params.currentPage
   ) {
-    fetchEmails(String(to.params.query), Number(to.params.currentPage));
+    searchDocument(String(to.params.query), Number(to.params.currentPage))
+      .then((data: SearchResult) => {
+        searchResult.updateSearchResult(data);
+      })
+      .catch((error) => console.log(error));
   }
 });
 </script>
@@ -105,7 +76,7 @@ onBeforeRouteUpdate(async (to, from) => {
           <div class="flex flex-nowrap items-center gap-1">
             <CalendarIcon class="w-6 h-6" />
             <p class="h-5 truncate">
-              {{ parseDate(document.date) }}
+              {{ parseDate(document.date, options) }}
             </p>
           </div>
         </div>
