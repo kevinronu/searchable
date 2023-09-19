@@ -36,7 +36,7 @@ type Response struct {
 				Bcc       []string  `json:"bcc,omitempty"`
 				Body      string    `json:"body"`
 				Cc        []string  `json:"cc,omitempty"`
-				Date      string    `json:"date"`
+				Date      time.Time `json:"date"`
 				From      string    `json:"from"`
 				MessageID string    `json:"message_id"`
 				Subject   string    `json:"subject"`

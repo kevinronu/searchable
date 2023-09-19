@@ -2,11 +2,9 @@ package utils
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"net/mail"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/kevinronu/email-indexer/server/models"
@@ -93,12 +91,6 @@ func ConvertResponseToDocuments(response models.Response) []models.Document {
 	documents := make([]models.Document, 0, len(response.Hits.Hits))
 
 	for _, hit := range response.Hits.Hits {
-		date, err := time.Parse(time.RFC3339, hit.Source.Date)
-		if err != nil {
-			fmt.Printf("WARNING: Couldn't parse Date for with ID %s: %s", hit.ID, err)
-			date = time.Now()
-		}
-
 		document := models.Document{
 			Id:      hit.ID,
 			Subject: hit.Source.Subject,
@@ -106,7 +98,7 @@ func ConvertResponseToDocuments(response models.Response) []models.Document {
 			To:      hit.Source.To,
 			Cc:      hit.Source.Cc,
 			Body:    hit.Source.Body,
-			Date:    date,
+			Date:    hit.Source.Date,
 		}
 
 		documents = append(documents, document)
