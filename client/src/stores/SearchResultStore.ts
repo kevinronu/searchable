@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 import { SearchResult } from "../models/document.model";
 
-export const useSearchResultStoreStore = defineStore("searchResultStore", {
+export const useSearchResultStore = defineStore("searchResultStore", {
   state: () => ({
     searchResult: JSON.parse(
       localStorage.getItem("searchResult") || "{}"

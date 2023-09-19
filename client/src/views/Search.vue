@@ -2,7 +2,7 @@
 import { onMounted } from "vue";
 import { useRoute, onBeforeRouteUpdate } from "vue-router";
 
-import { useSearchResultStoreStore } from "../stores/SearchResultStore";
+import { useSearchResultStore } from "../stores/SearchResultStore";
 import { SearchResult, Body } from "../models/document.model.ts";
 import MailToIcon from "../components/icons/MailToIcon.vue";
 import MailFromIcon from "../components/icons/MailFromIcon.vue";
@@ -10,7 +10,7 @@ import CalendarIcon from "../components/icons/CalendarIcon.vue";
 import Pagination from "../components/Pagination.vue";
 const route = useRoute();
 
-const searchResult = useSearchResultStoreStore();
+const searchResult = useSearchResultStore();
 
 const indexName = import.meta.env.VITE_INDEX_NAME;
 const BASE_URI = import.meta.env.VITE_BASE_URI;

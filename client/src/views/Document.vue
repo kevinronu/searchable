@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
 import { Document, SearchResult } from "../models/document.model.ts";
-import { useSearchResultStoreStore } from "../stores/SearchResultStore";
+import { useSearchResultStore } from "../stores/SearchResultStore";
 import ArrowLeftIcon from "../components/icons/ArrowLeftIcon.vue";
 import MailToIcon from "../components/icons/MailToIcon.vue";
 import MailFromIcon from "../components/icons/MailFromIcon.vue";
@@ -12,7 +12,7 @@ import CalendarIcon from "../components/icons/CalendarIcon.vue";
 const indexName = import.meta.env.VITE_INDEX_NAME;
 const BASE_URI = import.meta.env.VITE_BASE_URI;
 const route = useRoute();
-const searchResult = useSearchResultStoreStore();
+const searchResult = useSearchResultStore();
 const document = ref<Document>();
 
 function parseDate(date: Date | string): string {
