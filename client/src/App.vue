@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, watch } from "vue";
 
-import Footer from "./components/Footer.vue";
-import Header from "./components/Header.vue";
+import FooterComponent from "./components/FooterComponent.vue";
+import HeaderComponent from "./components/HeaderComponent.vue";
 import { useThemeStore } from "./stores/ThemeStore";
 
 const themeStore = useThemeStore();
@@ -26,7 +26,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Header />
+  <HeaderComponent />
   <router-view />
-  <Footer />
+  <FooterComponent />
 </template>

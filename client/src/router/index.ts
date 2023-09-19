@@ -1,23 +1,24 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
-import Search from "../views/Search.vue";
-import Document from "../views/Document.vue";
+
+import HomeView from "../views/HomeView.vue";
+import SearchView from "../views/SearchView.vue";
+import DocumentView from "../views/DocumentView.vue";
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "HomeView",
+    component: HomeView,
   },
   {
     path: "/search/:query/page/:currentPage",
-    name: "Search",
-    component: Search,
+    name: "SearchView",
+    component: SearchView,
   },
   {
     path: "/document/:documentId",
-    name: "Document",
-    component: Document,
+    name: "DocumentView",
+    component: DocumentView,
   },
 ];
 
