@@ -12,30 +12,36 @@ const submit = () => {
 </script>
 
 <template>
-  <main class="flex-auto grid place-items-center">
-    <div class="flex flex-wrap items-center justify-center gap-2">
-      <SearchFileIcon class="w-16 h-16 pt-2" />
-      <div>
-        <h1 class="text-3xl text-pink-600 mb-2">Fast Search</h1>
-        <form
-          class="flex items-center justify-center gap-1 bg-[#2CBCB2] outline-none ring ring-pink-600 rounded"
-          @submit.prevent="submit"
+  <main class="container m-auto flex-auto grid place-items-center">
+    <div class="w-full max-w-xl px-4">
+      <div class="flex flex-nowrap items-center justify-center gap-2 mb-2">
+        <SearchFileIcon class="w-10 h-10" />
+        <h1 class="text-3xl text-pink-600">Search by Words</h1>
+      </div>
+      <form @submit.prevent="submit">
+        <div
+          class="flex items-center bg-stone-50 dark:bg-stone-800 dark:placeholder:text-gray-400 outline-none ring ring-pink-600 rounded"
         >
           <input
             v-model="query"
             type="text"
             name="term"
-            placeholder="Search by word..."
-            class="rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded placeholder:text-gray-500 bg-stone-50 dark:bg-stone-500 dark:placeholder:text-gray-400"
+            placeholder="+marketing +campaign -action"
+            class="appearance-none px-4 py-2 bg-stone-50 dark:bg-stone-800 pr-2 w-full rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded placeholder:text-gray-500 placeholder:dark:text-gray-400"
           />
           <button
             type="submit"
-            class="focus:outline-none focus:ring focus:ring-blue-400 focus:rounded"
+            class="ml-[3px] rounded bg-[#2CBCB2] focus:outline-none focus:ring focus:ring-blue-400 focus:rounded p-2"
           >
             <SearchIcon class="w-6 h-6" />
           </button>
-        </form>
-      </div>
+        </div>
+      </form>
+      <p class="mt-2 text-center">
+        Instructions:
+        <span class="text-green-500">+word</span> (include),
+        <span class="text-red-500">-word</span> (exclude)
+      </p>
     </div>
   </main>
 </template>
