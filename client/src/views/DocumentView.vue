@@ -14,7 +14,7 @@ const document = ref<Document>();
 
 onMounted(() => {
   if (route.params.documentId != "") {
-    if (searchResult.checkIfEmpty) {
+    if (!searchResult.checkIfHaveDocuments) {
       getDocument(String(route.params.documentId))
         .then((data: SearchResult) => {
           searchResult.updateSearchResult(data);
@@ -35,7 +35,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="container m-auto p-4 grid place-items-center" v-if="document">
+  <main
+    class="flex-auto container m-auto p-4 grid place-items-center"
+    v-if="document"
+  >
     <DocumentComponent
       :subject="document.subject"
       :body="document.body"
