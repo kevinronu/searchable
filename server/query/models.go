@@ -8,8 +8,8 @@ type QueryPaginationSettings struct {
 }
 
 type QueryDateRangeSettings struct {
-	From time.Time `json:"from"`
-	To   time.Time `json:"to"`
+	From time.Time `json:"from,omitempty"`
+	To   time.Time `json:"to,omitempty"`
 }
 
 type QuerySettings struct {
