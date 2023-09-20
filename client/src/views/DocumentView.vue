@@ -7,14 +7,16 @@ import { Document, SearchResult } from "../models/document.model.ts";
 import { useSearchResultStore } from "../stores/SearchResultStore";
 import ArrowLeftIcon from "../components/icons/ArrowLeftIcon.vue";
 import { getDocument } from "../services/documents-service";
+import NoResultsComponent from "../components/NoResultsComponent.vue";
 
 const route = useRoute();
 const searchResult = useSearchResultStore();
 const document = ref<Document>();
+const fetched = ref(false);
 
 onMounted(() => {
   if (route.params.documentId != "") {
-    if (!searchResult.checkIfHaveDocuments) {
+    if (!searchResult.checkIfHaveDocuments && !fetched.value) {
       getDocument(String(route.params.documentId))
         .then((data: SearchResult) => {
           searchResult.updateSearchResult(data);
@@ -24,7 +26,8 @@ onMounted(() => {
         })
         .catch((error) => {
           console.error(error);
-        });
+        })
+        .finally(() => (fetched.value = true));
     } else {
       document.value = searchResult.getDocumentById(
         String(route.params.documentId)
@@ -35,11 +38,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <main
-    class="flex-auto container m-auto p-4 grid place-items-center"
-    v-if="document"
-  >
+  <main class="flex-auto container m-auto p-4 flex flex-col justify-between">
     <DocumentComponent
+      v-if="document"
       :subject="document.subject"
       :body="document.body"
       :from="document.from"
@@ -47,11 +48,14 @@ onMounted(() => {
       :cc="document.cc"
       :date="document.date"
     />
-    <a
-      href="javascript:history.back()"
-      class="grid place-items-center text-gray-200 bg-stone-100 dark:bg-stone-800 hover:bg-pink-700 font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
-    >
-      <ArrowLeftIcon class="h-6 w-6" />
-    </a>
+    <NoResultsComponent class="flex-auto" v-if="!document" />
+    <div class="text-center flex items-center justify-center">
+      <a
+        href="javascript:history.back()"
+        class="py-2 px-4 rounded-lg hover:bg-pink-700 hover:dark:bg-pink-700 bg-stone-100 dark:bg-stone-800 cursor-pointer shadow-md transition duration-300 ease-in-out"
+      >
+        <ArrowLeftIcon class="h-6 w-6" />
+      </a>
+    </div>
   </main>
 </template>
