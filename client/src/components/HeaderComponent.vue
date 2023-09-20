@@ -23,7 +23,7 @@ const themeStore = useThemeStore();
         <input
           type="checkbox"
           class="peer w-0 h-0 opacity-0"
-          v-model="themeStore.isDarkMode"
+          :checked="themeStore.isDarkMode"
           @change="themeStore.toggleTheme"
         />
         <span
