@@ -21,7 +21,7 @@ func main() {
 	if enableProfiling {
 		go func() {
 			log.Println("INFO: starting profiling server on port:", profilingPortString)
-			log.Println(http.ListenAndServe("localhost:"+profilingPortString, nil))
+			log.Println(http.ListenAndServe(":"+profilingPortString, nil))
 		}()
 	}
 
