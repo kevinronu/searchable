@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"strconv"
 	"time"
 
@@ -19,6 +20,7 @@ func main() {
 	profilingPortString := utils.GetEnv("PROFILING_PORT")
 	if enableProfiling {
 		go func() {
+			log.Println("INFO: starting profiling server on port:", profilingPortString)
 			log.Println(http.ListenAndServe("localhost:"+profilingPortString, nil))
 		}()
 	}
