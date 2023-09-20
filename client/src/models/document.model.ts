@@ -18,10 +18,22 @@ type Pagination = {
   size: number;
 };
 
+type DateRange = {
+  from: Date | null;
+  to: Date | null;
+};
+
 export type Body = {
   query: string;
   sort: string;
   pagination: Pagination;
+  date_range: DateRange;
+};
+
+export type Filters = {
+  sort: string;
+  from: string | null;
+  to: string | null;
 };
 
 type HttpMethod =
