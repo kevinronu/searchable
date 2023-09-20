@@ -28,11 +28,11 @@ const submit = () => {
             type="text"
             name="term"
             placeholder="+marketing +campaign -action"
-            class="appearance-none px-4 py-2 bg-stone-50 dark:bg-stone-800 pr-2 w-full rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded placeholder:text-gray-500 placeholder:dark:text-gray-400"
+            class="appearance-none px-4 py-2 pr-2 w-full rounded bg-stone-50 dark:bg-stone-800 hover:outline-none hover:ring hover:ring-blue-300 hover:rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded placeholder:text-gray-500 placeholder:dark:text-gray-400"
           />
           <button
             type="submit"
-            class="ml-[3px] rounded bg-[#2CBCB2] focus:outline-none focus:ring focus:ring-blue-400 focus:rounded p-2"
+            class="ml-[3px] rounded bg-[#2CBCB2] hover:outline-none hover:ring hover:ring-blue-300 hover:rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded p-2"
           >
             <SearchIcon class="w-6 h-6" />
           </button>
