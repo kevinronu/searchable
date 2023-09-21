@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { watch, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRoute, onBeforeRouteUpdate } from "vue-router";
 
+import LoadingComponent from "../components/LoadingComponent.vue";
 import FiltersComponent from "../components/FiltersComponent.vue";
 import NoResultsComponent from "../components/NoResultsComponent.vue";
 import DocumentPreviewComponent from "../components/DocumentPreviewComponent.vue";
@@ -16,9 +17,12 @@ const route = useRoute();
 const searchResult = useSearchResultStore();
 const filters = useFiltersStore();
 
+const loading = ref(false);
+
 watch(
   [() => filters.getSort, () => filters.getFrom, () => filters.getTo],
   ([newSort, newFrom, newTo]) => {
+    loading.value = true;
     searchDocument(
       String(route.params.query),
       Number(route.params.currentPage),
@@ -34,12 +38,14 @@ watch(
       .catch((error) => {
         searchResult.clearSearchResult();
         console.log(error);
-      });
+      })
+      .finally(() => (loading.value = false));
   }
 );
 
 onMounted(() => {
   if (route.params.query != "") {
+    loading.value = true;
     searchDocument(
       String(route.params.query),
       Number(route.params.currentPage),
@@ -55,7 +61,8 @@ onMounted(() => {
       .catch((error) => {
         searchResult.clearSearchResult();
         console.log(error);
-      });
+      })
+      .finally(() => (loading.value = false));
   }
 });
 
@@ -64,6 +71,7 @@ onBeforeRouteUpdate(async (to, from) => {
     to.params.query !== from.params.query ||
     to.params.currentPage !== from.params.currentPage
   ) {
+    loading.value = true;
     searchDocument(String(to.params.query), Number(to.params.currentPage), {
       sort: filters.getSort,
       from: filters.getFrom,
@@ -75,7 +83,8 @@ onBeforeRouteUpdate(async (to, from) => {
       .catch((error) => {
         searchResult.clearSearchResult();
         console.log(error);
-      });
+      })
+      .finally(() => (loading.value = false));
   }
 });
 </script>
@@ -84,7 +93,7 @@ onBeforeRouteUpdate(async (to, from) => {
     <FiltersComponent />
     <div
       class="container m-auto grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 p-4"
-      v-if="searchResult.checkIfHaveDocuments"
+      v-if="searchResult.checkIfHaveDocuments && !loading"
     >
       <router-link
         v-for="document in searchResult.getDocuments"
@@ -102,9 +111,10 @@ onBeforeRouteUpdate(async (to, from) => {
         />
       </router-link>
     </div>
-    <NoResultsComponent v-if="!searchResult.checkIfHaveDocuments" />
+    <LoadingComponent v-if="loading" />
+    <NoResultsComponent v-if="!searchResult.checkIfHaveDocuments && !loading" />
     <PaginationComponent
-      v-if="searchResult.checkIfHaveDocuments"
+      v-if="searchResult.checkIfHaveDocuments && !loading"
       :location="`/search/${String(route.params.query)}`"
       :current-page="Number(route.params.currentPage)"
       :total-quantity="searchResult.getTotal"
