@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
+import LoadingComponent from "../components/LoadingComponent.vue";
 import DocumentComponent from "../components/DocumentComponent.vue";
 import { Document, SearchResult } from "../models/document.model.ts";
 import { useSearchResultStore } from "../stores/SearchResultStore";
@@ -13,10 +14,12 @@ const route = useRoute();
 const searchResult = useSearchResultStore();
 const document = ref<Document>();
 const fetched = ref(false);
+const loading = ref(false);
 
 onMounted(() => {
   if (route.params.documentId != "") {
     if (!searchResult.checkIfHaveDocuments && !fetched.value) {
+      loading.value = true;
       getDocument(String(route.params.documentId))
         .then((data: SearchResult) => {
           searchResult.updateSearchResult(data);
@@ -27,7 +30,10 @@ onMounted(() => {
         .catch((error) => {
           console.error(error);
         })
-        .finally(() => (fetched.value = true));
+        .finally(() => {
+          loading.value = true;
+          fetched.value = true;
+        });
     } else {
       document.value = searchResult.getDocumentById(
         String(route.params.documentId)
@@ -48,7 +54,8 @@ onMounted(() => {
       :cc="document.cc"
       :date="document.date"
     />
-    <NoResultsComponent class="flex-auto" v-if="!document" />
+    <LoadingComponent v-if="loading" />
+    <NoResultsComponent v-if="!document && !loading" />
     <div class="text-center flex items-center justify-center">
       <a
         href="javascript:history.back()"
