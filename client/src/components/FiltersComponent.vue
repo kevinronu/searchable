@@ -31,7 +31,7 @@ function handleSortChange(event: Event) {
             class="appearance-none rounded w-full p-2 bg-stone-50 dark:bg-stone-800 dark:[color-scheme:dark] border-2 border-pink-600 hover:outline-none hover:border-blue-300 focus:border-blue-400"
             id="from-date"
             type="date"
-            v-model="filters.getFrom"
+            :value="filters.getFrom"
             @input="handleFromChange"
           />
         </div>
@@ -41,7 +41,7 @@ function handleSortChange(event: Event) {
             class="appearance-none rounded w-full p-2 bg-stone-50 dark:bg-stone-800 dark:[color-scheme:dark] border-2 border-pink-600 hover:outline-none hover:border-blue-300 focus:border-blue-400"
             id="to-date"
             type="date"
-            v-model="filters.getTo"
+            :value="filters.getTo"
             @input="handleToChange"
           />
         </div>
@@ -54,7 +54,7 @@ function handleSortChange(event: Event) {
           <select
             class="block appearance-none w-full min-w-[10rem] px-4 py-2 rounded border-2 border-pink-600 bg-stone-50 dark:bg-stone-800 hover:outline-none hover:border-blue-300 focus:border-blue-400"
             id="order-by-date"
-            v-model="filters.getSort"
+            :value="filters.getSort"
             @change="handleSortChange"
           >
             <option value="-date">Date descending</option>
