@@ -2,6 +2,10 @@
 
 Email Indexer is a powerful email processing tool designed to seamlessly integrate with ZincSearch, a robust alternative to Elasticsearch. This project exemplifies the versatility of modern web development technologies, featuring a backend crafted in `Go` and `Chi`, and a frontend powered by `TypeScript`, `Vue 3`, `Pinia` for state management, and `Router 4` for navigation.
 
+## Screenshot
+
+![Searchable Screenshot](https://github.com/kevinronu/email-indexer/blob/main/screenshot.webp?raw=true)
+
 ## Installation and Setup
 
 1. **Clone this Repository:**
@@ -43,7 +47,7 @@ Email Indexer is a powerful email processing tool designed to seamlessly integra
    docker compose up
    ```
 
-With these steps completed, Email Indexer is now running on your local environment..
+With these steps completed, Email Indexer is now running on your local environment.
 
 ## Project Overview
 
