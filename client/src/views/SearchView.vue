@@ -12,6 +12,10 @@ import { searchDocument } from "../services/documents-service";
 import { SearchResult } from "../models/document.model.ts";
 import { useFiltersStore } from "../stores/FiltersStore";
 
+const resultsPerPage = Number(import.meta.env.VITE_RESULTS_PER_PAGE);
+const maximumPagesGenerated = Number(
+  import.meta.env.VITE_MAXIMUM_PAGES_GENERATED
+);
 const route = useRoute();
 
 const searchResult = useSearchResultStore();
@@ -118,8 +122,8 @@ onBeforeRouteUpdate(async (to, from) => {
       :location="`/search/${String(route.params.query)}`"
       :current-page="Number(route.params.currentPage)"
       :total-quantity="searchResult.getTotal"
-      :quantity-per-page="20"
-      :max-pages-generated="10"
+      :quantity-per-page="resultsPerPage"
+      :max-pages-generated="maximumPagesGenerated"
     />
     <div v-if="!searchResult.checkIfHaveDocuments" class="text-center">
       <router-link
