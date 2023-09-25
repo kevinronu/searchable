@@ -26,6 +26,7 @@ const submit = () => {
           <input
             v-model="query"
             type="text"
+            data-testid="search-input"
             name="term"
             placeholder="+marketing +campaign -action"
             class="appearance-none px-4 py-2 pr-2 w-full rounded bg-stone-50 dark:bg-stone-800 hover:outline-none hover:ring hover:ring-blue-300 hover:rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded placeholder:text-gray-500 placeholder:dark:text-gray-400"
