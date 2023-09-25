@@ -33,6 +33,7 @@ const submit = () => {
           />
           <button
             type="submit"
+            data-testid="search-button"
             class="ml-[3px] rounded bg-[#2CBCB2] hover:outline-none hover:ring hover:ring-blue-300 hover:rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded p-2"
           >
             <SearchIcon class="w-6 h-6" />
