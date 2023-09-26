@@ -5,14 +5,14 @@ WORKDIR /app
 COPY ["./server/go.mod", "./server/go.sum", "./"]
 RUN go mod download
 COPY ./server .
-RUN go build -o app -v .
+RUN go build -o server -v .
 
 #final stage
 FROM alpine:3.18
 RUN apk update
 RUN apk --no-cache add ca-certificates
 WORKDIR /app
-COPY --from=builder /app .
-ENTRYPOINT ["./app"]
+COPY --from=builder /app/server .
+ENTRYPOINT ["./server"]
 LABEL Name=emailindexerserver
 # EXPOSE 3000
