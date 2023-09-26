@@ -32,7 +32,7 @@ func main() {
 	zincPort := utils.GetEnv("ZINC_PORT")
 	zincAdminUser := utils.GetEnv("ZINC_ADMIN_USER")
 	zincAdminPassword := utils.GetEnv("ZINC_ADMIN_PASSWORD")
-	removeIndexIfExists, _ := strconv.ParseBool(utils.GetEnv("REMOVE_INDEX_If_EXISTS"))
+	removeIndexIfExists, _ := strconv.ParseBool(utils.GetEnv("REMOVE_INDEX_IF_EXISTS"))
 	numUploaderWorkers, _ := strconv.Atoi(utils.GetEnv("NUM_UPLOADER_WORKERS"))
 	numParserWorkers, _ := strconv.Atoi(utils.GetEnv("NUM_PARSER_WORKERS"))
 	bulkUploadQuantity, _ := strconv.Atoi(utils.GetEnv("BULK_UPLOAD_QUANTITY"))
