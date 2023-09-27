@@ -17,29 +17,33 @@ const submit = () => {
     <div class="w-full max-w-xl px-4">
       <div class="flex flex-nowrap items-center justify-center gap-2 mb-2">
         <SearchFileIcon class="w-10 h-10" />
-        <h1 class="text-3xl text-pink-600">Search by Words</h1>
+        <label class="text-3xl text-pink-600" for="search-input">
+          Search by Words
+        </label>
       </div>
-      <form @submit.prevent="submit">
-        <div
-          class="flex items-center bg-stone-50 dark:bg-stone-800 dark:placeholder:text-gray-400 outline-none ring ring-pink-600 rounded"
-        >
-          <input
-            v-model="query"
-            type="text"
-            data-testid="search-input"
-            name="term"
-            placeholder="+marketing +campaign -action"
-            class="appearance-none px-4 py-2 pr-2 w-full rounded bg-stone-50 dark:bg-stone-800 hover:outline-none hover:ring hover:ring-blue-300 hover:rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded placeholder:text-gray-500 placeholder:dark:text-gray-400"
-          />
-          <button
-            type="submit"
-            data-testid="search-button"
-            class="ml-[3px] rounded bg-[#2CBCB2] hover:outline-none hover:ring hover:ring-blue-300 hover:rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded p-2"
+      <search>
+        <form @submit.prevent="submit">
+          <div
+            class="flex items-center bg-stone-50 dark:bg-stone-800 dark:placeholder:text-gray-400 outline-none ring ring-pink-600 rounded"
           >
-            <SearchIcon class="w-6 h-6" />
-          </button>
-        </div>
-      </form>
+            <input
+              v-model="query"
+              type="search"
+              data-testid="search-input"
+              name="search-input"
+              placeholder="+marketing +campaign -action"
+              class="appearance-none px-4 py-2 pr-2 w-full rounded bg-stone-50 dark:bg-stone-800 hover:outline-none hover:ring hover:ring-blue-300 hover:rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded placeholder:text-gray-500 placeholder:dark:text-gray-400"
+            />
+            <button
+              type="submit"
+              data-testid="search-button"
+              class="ml-[3px] rounded bg-[#2CBCB2] hover:outline-none hover:ring hover:ring-blue-300 hover:rounded focus:outline-none focus:ring focus:ring-blue-400 focus:rounded p-2"
+            >
+              <SearchIcon class="w-6 h-6" />
+            </button>
+          </div>
+        </form>
+      </search>
       <p class="mt-2 text-center">
         Instructions:
         <span class="text-green-500">+word</span> (include),
