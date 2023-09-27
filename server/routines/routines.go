@@ -38,7 +38,7 @@ func uploadEmails(emailsChan <-chan models.Email, bulkUploadQuantity int, zincCr
 			log.Printf("TRACE: uploading %d emails\n", count)
 			err := zinc.UploadEmails(bulk, zincCredentials)
 			if err != nil {
-				log.Fatal("FATAL: failed to upload emails: ", err)
+				log.Fatal("FATAL: Failed to upload emails:", err)
 			}
 			totalUploaded += count
 			count = 0
@@ -50,7 +50,7 @@ func uploadEmails(emailsChan <-chan models.Email, bulkUploadQuantity int, zincCr
 		bulk.Records = bulk.Records[:count]
 		err := zinc.UploadEmails(bulk, zincCredentials)
 		if err != nil {
-			log.Fatal("FATAL: failed to upload emails: ", err)
+			log.Fatal("FATAL: Failed to upload emails:", err)
 		}
 		totalUploaded += count
 	}
@@ -61,7 +61,7 @@ func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWor
 	pathsChan := make(chan string)
 	emailsChan := make(chan models.Email)
 
-	log.Printf("TRACE: spawning %d uploader goroutines", numUploaderWorkers)
+	log.Printf("TRACE: spawning %d uploader goroutines\n", numUploaderWorkers)
 	var wgUploaders sync.WaitGroup
 	for i := 0; i < numUploaderWorkers; i++ {
 		wgUploaders.Add(1)
@@ -71,7 +71,7 @@ func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWor
 		}()
 	}
 
-	log.Printf("TRACE: spawning %d parser goroutines", numParserWorkers)
+	log.Printf("TRACE: spawning %d parser goroutines\n", numParserWorkers)
 	var wgParsers sync.WaitGroup
 	for i := 0; i < numParserWorkers; i++ {
 		wgParsers.Add(1)
@@ -83,7 +83,7 @@ func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWor
 
 	err := filepath.WalkDir(emailsDir, func(path string, entry fs.DirEntry, errWalk error) error {
 		if errWalk != nil {
-			log.Fatal(errWalk)
+			fmt.Printf("WARNING: Error walking '%s': %v\n", emailsDir, errWalk)
 		}
 		if !entry.IsDir() {
 			pathsChan <- path
@@ -91,7 +91,7 @@ func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWor
 		return nil
 	})
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("FATAL: Error walking directory '%s': %v", emailsDir, err)
 	}
 
 	close(pathsChan)

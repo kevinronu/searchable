@@ -93,19 +93,19 @@ func (zincService ZincService) CreateIndex() error {
 
 	req, err := http.NewRequest("POST", zincService.BaseUrl+"/api/index", bytes.NewReader(jsonIndexMapping))
 	if err != nil {
-		return err
+		return fmt.Errorf("Couldn't create a request: %v", err)
 	}
 	req.SetBasicAuth(zincService.User, zincService.Password)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return err
+		return fmt.Errorf("Couldn't send request to ZincSearch: %v", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to read response body from ZincSearch: %v", err)
 	}
 	if resp.StatusCode != http.StatusOK {
 		if resp.StatusCode == 401 {
@@ -120,19 +120,19 @@ func (zincService ZincService) CreateIndex() error {
 func (zincService ZincService) DeleteIndex() error {
 	req, err := http.NewRequest("DELETE", zincService.BaseUrl+"/api/index/"+zincService.IndexName, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("Couldn't create a request: %v", err)
 	}
 	req.SetBasicAuth(zincService.User, zincService.Password)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return err
+		return fmt.Errorf("Couldn't send request to ZincSearch: %v", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to read response body from ZincSearch: %v", err)
 	}
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("ZincSearch responded with code %v: %v", resp.StatusCode, string(body))
@@ -144,13 +144,13 @@ func (zincService ZincService) DeleteIndex() error {
 func (zincService ZincService) CheckIfIndexExists() (bool, error) {
 	req, err := http.NewRequest("HEAD", zincService.BaseUrl+"/api/index/"+zincService.IndexName, nil)
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("Couldn't create a request: %v", err)
 	}
 	req.SetBasicAuth(zincService.User, zincService.Password)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("Couldn't send request to ZincSearch: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -158,7 +158,6 @@ func (zincService ZincService) CheckIfIndexExists() (bool, error) {
 		if resp.StatusCode == 401 {
 			return false, errors.New("Unauthorized, invalid credentials")
 		}
-		fmt.Println(resp)
 		return false, nil
 	}
 
