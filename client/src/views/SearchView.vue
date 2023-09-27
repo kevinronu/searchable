@@ -96,7 +96,7 @@ onBeforeRouteUpdate(async (to, from) => {
   <main class="flex-auto flex flex-col justify-between">
     <FiltersComponent />
     <div
-      class="container m-auto grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 p-4"
+      class="container m-auto flex-auto grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 p-4"
       v-if="searchResult.checkIfHaveDocuments && !loading"
     >
       <router-link
