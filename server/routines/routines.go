@@ -113,8 +113,8 @@ func walkDirectories(dir string, pathsChan chan<- string, wgWalkers *sync.WaitGr
 }
 
 func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWorkers int, bulkUploadQuantity int, zincAuth zinc.ZincService) {
-	pathsChan := make(chan string, 1000)
-	emailsChan := make(chan models.Email, 1000)
+	pathsChan := make(chan string, bulkUploadQuantity)
+	emailsChan := make(chan models.Email, bulkUploadQuantity)
 
 	log.Printf("TRACE: spawning %d uploader goroutines\n", numUploaderWorkers)
 	var wgUploaders sync.WaitGroup
