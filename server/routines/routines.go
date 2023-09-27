@@ -13,7 +13,20 @@ import (
 )
 
 func parseEmailFiles(pathsChan <-chan string, emailsChan chan<- models.Email) {
-	for path := range pathsChan {
+	// for path := range pathsChan {
+	// 	email, err := utils.FileToEmail(path)
+	// 	if err != nil {
+	// 		log.Printf("WARNING: failed to parse %v: %v\n", path, err)
+	// 	} else {
+	// 		emailsChan <- email
+	// 	}
+	// }
+
+	for {
+		path, ok := <-pathsChan
+		if !ok {
+			break
+		}
 		email, err := utils.FileToEmail(path)
 		if err != nil {
 			log.Printf("WARNING: failed to parse %v: %v\n", path, err)
@@ -31,7 +44,25 @@ func uploadEmails(emailsChan <-chan models.Email, bulkUploadQuantity int, zincCr
 	count := 0
 	totalUploaded := 0
 
-	for email := range emailsChan {
+	// for email := range emailsChan {
+	// 	bulk.Records[count] = email
+	// 	count++
+	// 	if count == bulkUploadQuantity {
+	// 		log.Printf("TRACE: uploading %d emails\n", count)
+	// 		err := zinc.UploadEmails(bulk, zincCredentials)
+	// 		if err != nil {
+	// 			log.Fatal("FATAL: Failed to upload emails:", err)
+	// 		}
+	// 		totalUploaded += count
+	// 		count = 0
+	// 	}
+	// }
+
+	for {
+		email, ok := <-emailsChan
+		if !ok {
+			break
+		}
 		bulk.Records[count] = email
 		count++
 		if count == bulkUploadQuantity {
@@ -57,9 +88,33 @@ func uploadEmails(emailsChan <-chan models.Email, bulkUploadQuantity int, zincCr
 	log.Printf("INFO: goroutine uploaded %d emails\n", totalUploaded)
 }
 
+func walkDirectories(dir string, pathsChan chan<- string, wgWalkers *sync.WaitGroup) {
+	defer wgWalkers.Done()
+
+	err := filepath.WalkDir(dir, func(path string, entry fs.DirEntry, errWalk error) error {
+		if errWalk != nil {
+			fmt.Printf("WARNING: Error walking '%s': %v\n", dir, errWalk)
+			return errWalk
+		}
+		if entry.IsDir() && path != dir {
+			wgWalkers.Add(1)
+			go walkDirectories(path, pathsChan, wgWalkers)
+			return filepath.SkipDir
+		}
+		if !entry.IsDir() {
+			pathsChan <- path
+		}
+		return nil
+	})
+
+	if err != nil {
+		fmt.Printf("WARNING: Error walking directory '%s': %v\n", dir, err)
+	}
+}
+
 func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWorkers int, bulkUploadQuantity int, zincAuth zinc.ZincService) {
-	pathsChan := make(chan string)
-	emailsChan := make(chan models.Email)
+	pathsChan := make(chan string, 1000)
+	emailsChan := make(chan models.Email, 1000)
 
 	log.Printf("TRACE: spawning %d uploader goroutines\n", numUploaderWorkers)
 	var wgUploaders sync.WaitGroup
@@ -81,18 +136,10 @@ func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWor
 		}()
 	}
 
-	err := filepath.WalkDir(emailsDir, func(path string, entry fs.DirEntry, errWalk error) error {
-		if errWalk != nil {
-			fmt.Printf("WARNING: Error walking '%s': %v\n", emailsDir, errWalk)
-		}
-		if !entry.IsDir() {
-			pathsChan <- path
-		}
-		return nil
-	})
-	if err != nil {
-		log.Fatalf("FATAL: Error walking directory '%s': %v", emailsDir, err)
-	}
+	var wgWalkers sync.WaitGroup
+	wgWalkers.Add(1)
+	go walkDirectories(emailsDir, pathsChan, &wgWalkers)
+	wgWalkers.Wait()
 
 	close(pathsChan)
 	wgParsers.Wait()
