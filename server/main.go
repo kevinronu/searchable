@@ -29,9 +29,9 @@ func main() {
 	emailsDir := utils.GetEnv("EMAILS_DIR")
 	indexName := utils.GetEnv("INDEX_NAME")
 	zincHost := utils.GetEnv("ZINC_HOST")
-	zincPort := utils.GetEnv("ZINC_PORT")
-	zincAdminUser := utils.GetEnv("ZINC_ADMIN_USER")
-	zincAdminPassword := utils.GetEnv("ZINC_ADMIN_PASSWORD")
+	zincPort := utils.GetEnv("ZINC_SERVER_PORT")
+	zincAdminUser := utils.GetEnv("ZINC_FIRST_ADMIN_USER")
+	zincAdminPassword := utils.GetEnv("ZINC_FIRST_ADMIN_PASSWORD")
 	removeIndexIfExists, _ := strconv.ParseBool(utils.GetEnv("REMOVE_INDEX_IF_EXISTS"))
 	numUploaderWorkers, _ := strconv.Atoi(utils.GetEnv("NUM_UPLOADER_WORKERS"))
 	numParserWorkers, _ := strconv.Atoi(utils.GetEnv("NUM_PARSER_WORKERS"))
@@ -46,7 +46,7 @@ func main() {
 
 	indexExists, err := zincService.CheckIfIndexExists()
 	if err != nil {
-		log.Fatal("FATAL: ", err)
+		log.Fatal("FATAL: Failed to check if index exists:", err)
 	}
 
 	if indexExists {
@@ -55,12 +55,12 @@ func main() {
 			log.Printf("INFO: deleting %s index\n", indexName)
 			err = zincService.DeleteIndex()
 			if err != nil {
-				log.Fatal("FATAL: ", err)
+				log.Fatal("FATAL: Failed to delete index:", err)
 			}
 			// Update indexExists value after delete
 			indexExists, err = zincService.CheckIfIndexExists()
 			if err != nil {
-				log.Fatal("FATAL: ", err)
+				log.Fatal("FATAL: Failed to check again if index exists:", err)
 			}
 		}
 	}
@@ -69,12 +69,12 @@ func main() {
 		log.Println("INFO: creating index for:", indexName)
 		err = zincService.CreateIndex()
 		if err != nil {
-			log.Fatal("FATAL: ", err)
+			log.Fatal("FATAL: Failed to create index:", err)
 		}
-		log.Println("INFO: starting to parse and upload emails at dir:", emailsDir)
+		log.Println("INFO: Starting to parse and upload emails at dir:", emailsDir)
 		start := time.Now()
 		routines.ParseAndUploadEmails(emailsDir, numUploaderWorkers, numParserWorkers, bulkUploadQuantity, zincService)
-		log.Printf("INFO: file indexing finished in %v\n", time.Since(start))
+		log.Printf("INFO: File indexing finished in %v\n", time.Since(start))
 	}
 
 	router := chi.NewRouter()
@@ -103,10 +103,10 @@ func main() {
 		Addr:    ":" + portString,
 	}
 
-	log.Printf("Server starting and port %s", portString)
+	log.Println("INFO: Server is starting on port:", portString)
 
 	err = srv.ListenAndServe()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("FATAL: Failed to start server:", err)
 	}
 }

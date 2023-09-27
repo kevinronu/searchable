@@ -14,5 +14,4 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /app
 COPY --from=builder /app/server .
 ENTRYPOINT ["./server"]
-LABEL Name=emailindexerserver
-# EXPOSE 3000
+LABEL Name="email-indexer-server"
