@@ -1,0 +1,163 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2023-09-27T01:57:47.608Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "req_40ccdfe912b84c89922451b0f576162c",
+      "parentId": "wrk_1bac2b5b66fd453b9117a5d3e575c43d",
+      "modified": 1695425047176,
+      "created": 1694461626301,
+      "url": "{{ _.BASE_URL }}/v1/emails",
+      "name": "Get All Emails",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"sort\": \"-date\",\n\t\"pagination\": {\n\t\t\"from\": 0,\n\t\t\"size\": 20\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "User-Agent", "value": "insomnia/2023.5.8" }
+      ],
+      "authentication": {},
+      "metaSortKey": -1694371132348,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "wrk_1bac2b5b66fd453b9117a5d3e575c43d",
+      "parentId": null,
+      "modified": 1694461527726,
+      "created": 1694461527726,
+      "name": "Email Indexer API",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_385183beb4664555863355e2f9f53c2b",
+      "parentId": "wrk_1bac2b5b66fd453b9117a5d3e575c43d",
+      "modified": 1695423819962,
+      "created": 1694462245248,
+      "url": "{{ _.BASE_URL }}/v1/emails/search",
+      "name": "Search Email",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"query\": \"+marketing +campaign -action\",\n  \"sort\": \"-date\",\n  \"pagination\": {\n    \"from\": 0,\n    \"size\": 20\n  },\n  \"date_range\": {\n    \"from\": \"2001-10-01T00:00:00Z\",\n    \"to\": \"2001-10-31T23:59:59Z\"\n  }\n}\n"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "User-Agent", "value": "insomnia/2023.5.8" }
+      ],
+      "authentication": {},
+      "metaSortKey": -1694325907165,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_575291a1dc684317b30e2a6ed559a0bf",
+      "parentId": "wrk_1bac2b5b66fd453b9117a5d3e575c43d",
+      "modified": 1694632159854,
+      "created": 1694469288351,
+      "url": "{{ _.BASE_URL }}/v1/emails/21GaebFYrjQ",
+      "name": "Delete Email",
+      "description": "",
+      "method": "DELETE",
+      "body": { "mimeType": "application/json", "text": "" },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "User-Agent", "value": "insomnia/2023.5.8" }
+      ],
+      "authentication": {},
+      "metaSortKey": -1694303294573.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_5d7e62f646f44e9ca5beafe10821b426",
+      "parentId": "wrk_1bac2b5b66fd453b9117a5d3e575c43d",
+      "modified": 1695098301368,
+      "created": 1694880620072,
+      "url": "{{ _.BASE_URL }}/v1/emails/21RIaRka7cW",
+      "name": "Get Email",
+      "description": "",
+      "method": "GET",
+      "body": { "mimeType": "application/json", "text": "" },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "User-Agent", "value": "insomnia/2023.5.8" }
+      ],
+      "authentication": {},
+      "metaSortKey": -1694291988277.75,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_2c711d6e6a9606b0b60bb9cb9cc87299e66ae11e",
+      "parentId": "wrk_1bac2b5b66fd453b9117a5d3e575c43d",
+      "modified": 1694461527734,
+      "created": 1694461527734,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1694461527734,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_2c711d6e6a9606b0b60bb9cb9cc87299e66ae11e",
+      "parentId": "wrk_1bac2b5b66fd453b9117a5d3e575c43d",
+      "modified": 1694461527738,
+      "created": 1694461527738,
+      "name": "Default Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    },
+    {
+      "_id": "env_18cac936e6d04a25af22f08bc9308f7a",
+      "parentId": "env_2c711d6e6a9606b0b60bb9cb9cc87299e66ae11e",
+      "modified": 1694461579841,
+      "created": 1694461557349,
+      "name": "Local",
+      "data": { "BASE_URL": "http://localhost:3000" },
+      "dataPropertyOrder": { "&": ["BASE_URL"] },
+      "color": "#ff0000",
+      "isPrivate": false,
+      "metaSortKey": 1694461557349,
+      "_type": "environment"
+    }
+  ]
+}

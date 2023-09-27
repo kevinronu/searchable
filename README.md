@@ -43,9 +43,13 @@ Email Indexer is a powerful email processing tool designed to seamlessly integra
 
 5. **Run the application:**
    Launch the Email Indexer application using Docker Compose:
+
    ```sh
    docker compose up
    ```
+
+6. **Insomnia Testing**:
+   To explore and test the server and ZincSearch, import the [server_insomnia.json](https://github.com/kevinronu/email-indexer/blob/main/server-insomnia.json) and [zinc-insomnia.json](https://github.com/kevinronu/email-indexer/blob/main/zinc-insomnia.json) files into your Insomnia workspace.
 
 With these steps completed, Email Indexer is now running on your local environment.
 

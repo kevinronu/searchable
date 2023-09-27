@@ -1,0 +1,369 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2023-09-27T01:59:42.288Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "req_1ebb3016986f47b1999a3d480385929c",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1694290457956,
+      "created": 1694280681982,
+      "url": "{{ _.BASE_URL }}/healthz",
+      "name": "Healthz",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [{ "name": "User-Agent", "value": "insomnia/2023.5.8" }],
+      "authentication": {},
+      "metaSortKey": -1694280681982,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "wrk_2556d87e00f14a3ab163970c36760146",
+      "parentId": null,
+      "modified": 1694461513354,
+      "created": 1693968490044,
+      "name": "ZincSearch",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_a4e6f96580d14c7d85832614e855f0e3",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1694469821355,
+      "created": 1694219380589,
+      "url": "{{ _.BASE_URL }}/api/index/emails",
+      "name": "Check if Index Exists",
+      "description": "",
+      "method": "HEAD",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_e6ba3d51722f4a69bc3d87957121fccd",
+          "name": "",
+          "value": "",
+          "description": ""
+        }
+      ],
+      "authentication": {
+        "type": "basic",
+        "useISO88591": false,
+        "disabled": false,
+        "username": "admin",
+        "password": "Complexpass#123"
+      },
+      "metaSortKey": -1694258257737,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_8745c2f2a53d4340abc437d9489d4cf3",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1695067355685,
+      "created": 1694235833492,
+      "url": "{{ _.BASE_URL }}/api/emails/_search",
+      "name": "Search Email v1",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n    \"search_type\": \"querystring\",\n    \"query\": {\n        \"term\": \"+house +John +premium\",\n        \"field\": \"_all\"\n    },\n\t\t\"sort_fields\": [\"-date\"],\n    \"from\": 0,\n    \"max_results\": 20,\n    \"_source\": []\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_03d398959c1a4a03a9fe05d189f42a44"
+        }
+      ],
+      "authentication": {
+        "type": "basic",
+        "useISO88591": false,
+        "disabled": false,
+        "username": "admin",
+        "password": "Complexpass#123"
+      },
+      "metaSortKey": -1694235833492,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_f91649a75e4748988f68b5666d135056",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1695185801057,
+      "created": 1694302022157,
+      "url": "{{ _.BASE_URL }}/es/emails/_search",
+      "name": "Search Email v2",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        {\n          \"query_string\": {\n            \"query\": \"+marketing +campaign -action\"\n          }\n        }\n      ],\n      \"filter\": [\n        {\n          \"range\": {\n            \"date\": {\n              \"gte\": \"2001-12-01 00:00:00 +0000 UTC\",\n              \"format\": \"2006-01-02 15:04:05 -0700 MST\",\n              \"time_zone\": \"UTC\"\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"_source\": [\"date\"],\n  \"sort\": [\"-date\"],\n  \"from\": 0,\n  \"size\": 20\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_03d398959c1a4a03a9fe05d189f42a44"
+        }
+      ],
+      "authentication": {
+        "type": "basic",
+        "useISO88591": false,
+        "disabled": false,
+        "username": "admin",
+        "password": "Complexpass#123"
+      },
+      "metaSortKey": -1694233776879.125,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_21dac6ee47cf415eba3ceb9374a9e839",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1694882661211,
+      "created": 1694665305439,
+      "url": "{{ _.BASE_URL }}/es/emails/_search",
+      "name": "Search Email by ID v2",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"query\": {\n  \t\"term\": {\n    \t\t\"_id\": \"21GjD0CLN9b\"\n     }\n\t},\n\t\"_source\": []\n}\n"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_03d398959c1a4a03a9fe05d189f42a44"
+        }
+      ],
+      "authentication": {
+        "type": "basic",
+        "useISO88591": false,
+        "disabled": false,
+        "username": "admin",
+        "password": "Complexpass#123"
+      },
+      "metaSortKey": -1694233262725.9062,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_d48e2ea4a58e4384aa5f55515345f232",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1694303814531,
+      "created": 1694236172894,
+      "url": "{{ _.BASE_URL }}/api/emails/_search",
+      "name": "List All Email",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n    \"search_type\": \"alldocuments\",\n    \"sort_fields\": [\"-date\"],\n    \"from\": 0,\n    \"max_results\": 20,\n    \"_source\": []\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_03d398959c1a4a03a9fe05d189f42a44"
+        }
+      ],
+      "authentication": {
+        "type": "basic",
+        "useISO88591": false,
+        "disabled": false,
+        "username": "admin",
+        "password": "Complexpass#123"
+      },
+      "metaSortKey": -1694232748572.6875,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_de290baac96f45faa7a85df05017bbc2",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1694461353493,
+      "created": 1694301025902,
+      "url": "{{ _.BASE_URL }}/es/emails/_search",
+      "name": "List All Emails v2",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n    \"query\": {\n        \"match_all\": {}\n    },\n\t\t\"sort\": [\"-date\"],\n\t\t\"_source\": [],\n\t\t\"from\": 0,\n    \"size\": 20\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_03d398959c1a4a03a9fe05d189f42a44"
+        }
+      ],
+      "authentication": {
+        "type": "basic",
+        "useISO88591": false,
+        "disabled": false,
+        "username": "admin",
+        "password": "Complexpass#123"
+      },
+      "metaSortKey": -1694231720266.25,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_962c21f6426e421aa67ee59558c8633d",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1694885555694,
+      "created": 1694469879415,
+      "url": "{{ _.BASE_URL }}/es/emails/_doc/21GaebFYrjUd",
+      "name": "Delete Email",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "basic",
+        "useISO88591": false,
+        "disabled": false,
+        "username": "admin",
+        "password": "Complexpass#123"
+      },
+      "metaSortKey": -1694100108912.625,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_d3fa598f80f34c8aaa66c8eabb87e218",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1694219516608,
+      "created": 1693968497559,
+      "url": "{{ _.BASE_URL }}/api/_bulkv2",
+      "name": "Create Document Bulk v2",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n    \"index\" : \"olympics\",\n    \"records\": [\n        {\"Year\": 1896, \"City\": \"Athens\", \"Sport\": \"Aquatics\", \"Discipline\": \"Swimming\", \"Athlete\": \"HAJOS, Alfred\", \"Country\": \"HUN\", \"Gender\": \"Men\", \"Event\": \"100M Freestyle\", \"Medal\": \"Gold\", \"Season\": \"summer\"},\n        {\"Year\": 1896, \"City\": \"Athens\", \"Sport\": \"Aquatics\", \"Discipline\": \"Swimming\", \"Athlete\": \"HERSCHMANN, Otto\", \"Country\": \"AUT\", \"Gender\": \"Men\", \"Event\": \"100M Freestyle\", \"Medal\": \"Silver\", \"Season\": \"summer\"},\n        {\"Year\": 1896, \"City\": \"Athens\", \"Sport\": \"Aquatics\", \"Discipline\": \"Swimming\", \"Athlete\": \"CHASAPIS, Spiridon\", \"Country\": \"GRE\", \"Gender\": \"Men\", \"Event\": \"100M Freestyle For Sailors\", \"Medal\": \"Silver\", \"Season\": \"summer\"}\n    ]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_7530f84a1f554acdb165a0c923f821ac"
+        }
+      ],
+      "authentication": {
+        "type": "basic",
+        "useISO88591": false,
+        "disabled": false,
+        "username": "admin",
+        "password": "Complexpass#123"
+      },
+      "metaSortKey": -1693968497559,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_4cfac07d8087d59a618fa79b5d32c78f1114e865",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1693968520984,
+      "created": 1693968490055,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": {},
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1693968490055,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_4cfac07d8087d59a618fa79b5d32c78f1114e865",
+      "parentId": "wrk_2556d87e00f14a3ab163970c36760146",
+      "modified": 1693968490057,
+      "created": 1693968490057,
+      "name": "Default Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    },
+    {
+      "_id": "env_90402288b5ce49bc88ea8c9600160c7a",
+      "parentId": "env_4cfac07d8087d59a618fa79b5d32c78f1114e865",
+      "modified": 1694461550890,
+      "created": 1693968514784,
+      "name": "LOCAL",
+      "data": { "BASE_URL": "http://localhost:4080" },
+      "dataPropertyOrder": { "&": ["BASE_URL"] },
+      "color": "#f50505",
+      "isPrivate": false,
+      "metaSortKey": 1693968514784,
+      "_type": "environment"
+    }
+  ]
+}
