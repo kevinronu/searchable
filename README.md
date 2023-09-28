@@ -67,6 +67,76 @@ Email Indexer is your solution for efficiently managing and querying email data.
 
 - **Smooth Navigation**: Router 4 facilitates smooth navigation throughout the application, enhancing the user experience.
 
+## Deploy with Terraform
+
+You can easily deploy Email Indexer to AWS using Terraform. Follow these steps to set up and deploy the application:
+
+1. **Install Terraform:**
+   If you haven't already, you'll need to install Terraform. Visit the [Terraform](https://www.terraform.io) page and download the appropriate version for your operating system.
+
+2. **Verify Terraform Installation:**
+   To ensure Terraform is installed correctly, open your terminal and run:
+
+   ```sh
+   terraform --version
+   ```
+
+3. **AWS Credentials:**
+   Make sure you have AWS credentials configured on your local machine. You can set up your AWS credentials by using the AWS CLI or AWS Toolkit
+   extension for VSCode to creating a `~/.aws/credentials` file. Ensure your credentials have the necessary permissions to create the required AWS resources, I recommend `AdministratorAccess` policies.
+
+4. **Customize Terraform Variables:**
+   Open the `variables.tf` file in the Terraform directory and adjust the following variables to match your preferences:
+
+   - **`host_os`**: Set to `"windows"` or `"unix"` depending on your host OS preference.
+   - **`my_ip`**: Modify this to specify your public IP address or address range if needed. The default is "`0.0.0.0/0`" for unrestricted access.
+
+   `Windows Users without WSL`: If you're using Windows without Windows Subsystem for Linux (WSL), ensure you customize the SSH configuration in windows-ssh-config.tpl. Replace `username` with your Windows username in the SSH configuration template.
+
+5. **Deploy:**
+   After customizing your Terraform variables, you can deploy Email Indexer to AWS by running:
+
+   ```sh
+   terraform apply
+   ```
+
+   Terraform will display a plan showing the resources it will create. Review the plan and type `yes` to confirm the deployment. Terraform will provision the necessary AWS resources.
+
+6. **Access the Deployed Application:**
+   Once the deployment is complete, Terraform will provide information about the resources it created, including the public IP address or DNS name of your deployed Email Indexer application and you can view the output `dev-ip`.
+
+7. **Accessing the EC2 Instance:**
+   Open your terminal and run the following command, replacing `190.190.190.190` with the public IP address or DNS name of your EC2 instance (`dev-ip`):
+
+   ```sh
+   sh -i ~/.ssh/mtckey ubuntu@190.190.190.190
+   ```
+
+   Now you are in the EC2 Instance terminal.
+
+8. **GitHub Credentials Configuration:**
+   Follow the steps mentioned here [Generating a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) then the steps mentioned here [Adding a new SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
+
+9. **Installation and Setup:**
+   With GitHub credentials configured, you can proceed with the installation and setup of Email Indexer following the steps outlined in the [Installation and Setup](#installation-and-setup) section, but after `step 3` change the .env configuration according to the computational capacity of the EC2 instance (you can do it with the nano command), is mandatory to change the value of `DEPLOY_IP` to the value of `dev-ip`.
+
+   ```sh
+   nano .env
+   ```
+
+   Then continue with step 4. Ensure that you've completed all the necessary steps to set up and run Email Indexer successfully.
+
+10. **Cleanup Resources:**
+    If you want to tear down the deployed resources, you can run:
+
+    ```sh
+    terraform destroy
+    ```
+
+    Be cautious with this command, as it will remove all resources created by Terraform.
+
+With these steps, you can easily deploy Email Indexer to AWS using Terraform. Enjoy using your email processing tool in the cloud!
+
 ## Connect with Me
 
 LinkedIn: [Kevin Robles](https://www.linkedin.com/in/kevinronu/)
