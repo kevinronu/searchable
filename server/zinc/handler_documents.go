@@ -1,6 +1,7 @@
 package zinc
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -110,8 +111,14 @@ func (zincService ZincService) HandlerDocumentsDelete(w http.ResponseWriter, r *
 
 func (zincService ZincService) HandlerDocumentsPost(w http.ResponseWriter, r *http.Request, querySettings query.QuerySettings) {
 	query := querySettings.GenerateForDocumentsPost()
+	jsonBytes, err := json.Marshal(query)
+	if err != nil {
+		fmt.Println("WARNING: Couldn't decode query body for request", err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to decode query body")
+		return
+	}
 
-	req, err := http.NewRequest("POST", zincService.BaseUrl+"/es/"+zincService.IndexName+"/_search", strings.NewReader(query))
+	req, err := http.NewRequest("POST", zincService.BaseUrl+"/es/"+zincService.IndexName+"/_search", bytes.NewReader(jsonBytes))
 	if err != nil {
 		fmt.Println("WARNING: Couldn't create a request:", err)
 		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to create a request")
@@ -156,9 +163,23 @@ func (zincService ZincService) HandlerDocumentsPost(w http.ResponseWriter, r *ht
 }
 
 func (zincService ZincService) HandlerSearchDocumentPost(w http.ResponseWriter, r *http.Request, searchQuerySettings query.SearchQuerySettings) {
-	query := searchQuerySettings.GenerateForSearchDocumentPost()
+	searchQuery := searchQuerySettings.GenerateForSearchDocumentPost()
+	jsonBytes, err := json.Marshal(searchQuery)
+	if err != nil {
+		fmt.Println("WARNING: Couldn't decode query body for request", err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to decode query body")
+		return
+	}
 
-	req, err := http.NewRequest("POST", zincService.BaseUrl+"/es/"+zincService.IndexName+"/_search", strings.NewReader(query))
+	// b, err := json.MarshalIndent(searchQuery, "", "  ")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// fmt.Println(string(b))
+	// fmt.Println("==========")
+	// fmt.Println(string(jsonBytes))
+
+	req, err := http.NewRequest("POST", zincService.BaseUrl+"/es/"+zincService.IndexName+"/_search", bytes.NewReader(jsonBytes))
 	if err != nil {
 		fmt.Println("WARNING: Couldn't create a request:", err)
 		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to create a request")

@@ -22,3 +22,43 @@ type SearchQuerySettings struct {
 	Query string `json:"query"`
 	QuerySettings
 }
+
+// For Zinc
+
+type SearchQueryZinc struct {
+	Query  *QueryZinc `json:"query,omitempty"`
+	Source []string   `json:"_source"`
+	Sort   []string   `json:"sort"`
+	From   int        `json:"from"`
+	Size   int        `json:"size"`
+}
+
+type QueryZinc struct {
+	QueryString *QueryStringZinc `json:"query_string,omitempty"`
+	Range       *RangeZinc       `json:"range,omitempty"`
+	MatchAll    *MatchAll        `json:"match_all,omitempty"`
+	Bool        *BoolZinc        `json:"bool,omitempty"`
+}
+
+type MatchAll struct {
+}
+
+type QueryStringZinc struct {
+	Query string `json:"query"`
+}
+
+type RangeZinc struct {
+	Date DateZinc `json:"date"`
+}
+
+type DateZinc struct {
+	Gte      time.Time `json:"gte,omitempty"`
+	Lte      time.Time `json:"lte,omitempty"`
+	Format   string    `json:"format"`
+	TimeZone string    `json:"time_zone"`
+}
+
+type BoolZinc struct {
+	Must   []QueryZinc  `json:"must"`
+	Filter *[]QueryZinc `json:"filter,omitempty"`
+}
