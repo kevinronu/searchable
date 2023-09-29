@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/kevinronu/email-indexer/server/models"
 	"github.com/kevinronu/email-indexer/server/query"
@@ -14,17 +13,23 @@ import (
 )
 
 func (zincService ZincService) HandlerDocumentsGet(w http.ResponseWriter, r *http.Request, id string) {
-	const queryTemplate = `{
-    "query": {
-      "term": {
-				"_id": "%s"
-			}
-    },
-		"_source": []
-	}`
-	query := fmt.Sprintf(queryTemplate, id)
+	query := query.SearchQueryZinc{
+		Query: &query.QueryZinc{
+			Term: &query.TermZinc{
+				Id: id,
+			},
+		},
+		Source: []string{},
+	}
 
-	req, err := http.NewRequest("POST", zincService.BaseUrl+"/es/"+zincService.IndexName+"/_search", strings.NewReader(query))
+	jsonBytes, err := json.Marshal(query)
+	if err != nil {
+		fmt.Println("WARNING: Couldn't decode id for request", err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to decode id")
+		return
+	}
+
+	req, err := http.NewRequest("POST", zincService.BaseUrl+"/es/"+zincService.IndexName+"/_search", bytes.NewReader(jsonBytes))
 	if err != nil {
 		fmt.Println("WARNING: Couldn't create a request:", err)
 		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to create a request")

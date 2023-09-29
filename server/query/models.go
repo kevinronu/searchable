@@ -28,9 +28,9 @@ type SearchQuerySettings struct {
 type SearchQueryZinc struct {
 	Query  *QueryZinc `json:"query,omitempty"`
 	Source []string   `json:"_source"`
-	Sort   []string   `json:"sort"`
-	From   int        `json:"from"`
-	Size   int        `json:"size"`
+	Sort   []string   `json:"sort,omitempty"`
+	From   int        `json:"from,omitempty"`
+	Size   int        `json:"size,omitempty"`
 }
 
 type QueryZinc struct {
@@ -38,6 +38,7 @@ type QueryZinc struct {
 	Range       *RangeZinc       `json:"range,omitempty"`
 	MatchAll    *MatchAll        `json:"match_all,omitempty"`
 	Bool        *BoolZinc        `json:"bool,omitempty"`
+	Term        *TermZinc        `json:"term,omitempty"`
 }
 
 type MatchAll struct {
@@ -61,4 +62,8 @@ type DateZinc struct {
 type BoolZinc struct {
 	Must   []QueryZinc  `json:"must"`
 	Filter *[]QueryZinc `json:"filter,omitempty"`
+}
+
+type TermZinc struct {
+	Id string `json:"_id"`
 }
