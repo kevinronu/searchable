@@ -34,7 +34,6 @@ func main() {
 	zincAdminPassword := utils.GetEnv("ZINC_FIRST_ADMIN_PASSWORD")
 	removeIndexIfExists, _ := strconv.ParseBool(utils.GetEnv("REMOVE_INDEX_IF_EXISTS"))
 	numUploaderWorkers, _ := strconv.Atoi(utils.GetEnv("NUM_UPLOADER_WORKERS"))
-	numParserWorkers, _ := strconv.Atoi(utils.GetEnv("NUM_PARSER_WORKERS"))
 	bulkUploadQuantity, _ := strconv.Atoi(utils.GetEnv("BULK_UPLOAD_QUANTITY"))
 
 	zincService := zinc.ZincService{
@@ -73,7 +72,7 @@ func main() {
 		}
 		log.Println("INFO: Starting to parse and upload emails at dir:", emailsDir)
 		start := time.Now()
-		routines.ParseAndUploadEmails(emailsDir, numUploaderWorkers, numParserWorkers, bulkUploadQuantity, zincService)
+		routines.ParseAndUploadEmails(emailsDir, numUploaderWorkers, bulkUploadQuantity, zincService)
 		log.Printf("INFO: File indexing finished in %v\n", time.Since(start))
 	}
 
