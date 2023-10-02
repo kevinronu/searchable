@@ -88,33 +88,33 @@ func uploadEmails(emailsChan <-chan models.Email, bulkUploadQuantity int, zincCr
 	log.Printf("INFO: goroutine uploaded %d emails\n", totalUploaded)
 }
 
-func walkDirectories(dir string, pathsChan chan<- string, wgWalkers *sync.WaitGroup) {
-	defer wgWalkers.Done()
+// func walkDirectories(dir string, pathsChan chan<- string, wgWalkers *sync.WaitGroup) {
+// 	defer wgWalkers.Done()
 
-	err := filepath.WalkDir(dir, func(path string, entry fs.DirEntry, errWalk error) error {
-		if errWalk != nil {
-			fmt.Printf("WARNING: Error walking '%s': %v\n", dir, errWalk)
-			return errWalk
-		}
-		if entry.IsDir() && path != dir {
-			wgWalkers.Add(1)
-			go walkDirectories(path, pathsChan, wgWalkers)
-			return filepath.SkipDir
-		}
-		if !entry.IsDir() {
-			pathsChan <- path
-		}
-		return nil
-	})
+// 	err := filepath.WalkDir(dir, func(path string, entry fs.DirEntry, errWalk error) error {
+// 		if errWalk != nil {
+// 			fmt.Printf("WARNING: Error walking '%s': %v\n", dir, errWalk)
+// 			return errWalk
+// 		}
+// 		if entry.IsDir() && path != dir {
+// 			wgWalkers.Add(1)
+// 			go walkDirectories(path, pathsChan, wgWalkers)
+// 			return filepath.SkipDir
+// 		}
+// 		if !entry.IsDir() {
+// 			pathsChan <- path
+// 		}
+// 		return nil
+// 	})
 
-	if err != nil {
-		fmt.Printf("WARNING: Error walking directory '%s': %v\n", dir, err)
-	}
-}
+// 	if err != nil {
+// 		fmt.Printf("WARNING: Error walking directory '%s': %v\n", dir, err)
+// 	}
+// }
 
 func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWorkers int, bulkUploadQuantity int, zincAuth zinc.ZincService) {
-	pathsChan := make(chan string, bulkUploadQuantity)
-	emailsChan := make(chan models.Email, bulkUploadQuantity)
+	pathsChan := make(chan string)
+	emailsChan := make(chan models.Email)
 
 	log.Printf("TRACE: spawning %d uploader goroutines\n", numUploaderWorkers)
 	var wgUploaders sync.WaitGroup
@@ -136,10 +136,23 @@ func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWor
 		}()
 	}
 
-	var wgWalkers sync.WaitGroup
-	wgWalkers.Add(1)
-	go walkDirectories(emailsDir, pathsChan, &wgWalkers)
-	wgWalkers.Wait()
+	// var wgWalkers sync.WaitGroup
+	// wgWalkers.Add(1)
+	// go walkDirectories(emailsDir, pathsChan, &wgWalkers)
+	// wgWalkers.Wait()
+
+	err := filepath.WalkDir(emailsDir, func(path string, entry fs.DirEntry, errWalk error) error {
+		if errWalk != nil {
+			fmt.Printf("WARNING: Error walking '%s': %v\n", emailsDir, errWalk)
+		}
+		if !entry.IsDir() {
+			pathsChan <- path
+		}
+		return nil
+	})
+	if err != nil {
+		log.Fatalf("FATAL: Error walking directory '%s': %v", emailsDir, err)
+	}
 
 	close(pathsChan)
 	wgParsers.Wait()
