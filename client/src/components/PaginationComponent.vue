@@ -28,7 +28,10 @@ const props = defineProps({
 });
 
 const initialPage = computed(
-  () => (Math.ceil(props.currentPage / props.maxPagesGenerated) - 1) * 10 + 1
+  () =>
+    (Math.ceil(props.currentPage / props.maxPagesGenerated) - 1) *
+      props.maxPagesGenerated +
+    1
 );
 
 const numberOfPages = computed(() =>
