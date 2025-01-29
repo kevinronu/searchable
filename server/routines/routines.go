@@ -27,12 +27,14 @@ func parseEmailFiles(pathsChan <-chan string, emailsChan chan<- models.Email) {
 		if !ok {
 			break
 		}
+
 		email, err := utils.FileToEmail(path)
 		if err != nil {
 			log.Printf("WARNING: failed to parse %v: %v\n", path, err)
-		} else {
-			emailsChan <- email
+			continue
 		}
+
+		emailsChan <- email
 	}
 }
 
@@ -63,6 +65,7 @@ func uploadEmails(emailsChan <-chan models.Email, bulkUploadQuantity int, zincCr
 		if !ok {
 			break
 		}
+
 		bulk.Records[count] = email
 		count++
 		if count == bulkUploadQuantity {
@@ -75,16 +78,20 @@ func uploadEmails(emailsChan <-chan models.Email, bulkUploadQuantity int, zincCr
 			count = 0
 		}
 	}
+
 	// Upload any remaining emails (less than bulkUploadQuantity) in the last batch
 	if count > 0 {
 		log.Printf("TRACE: uploading %d emails\n", count)
 		bulk.Records = bulk.Records[:count]
+
 		err := zinc.UploadEmails(bulk, zincCredentials)
 		if err != nil {
 			log.Fatal("FATAL: Failed to upload emails:", err)
 		}
+
 		totalUploaded += count
 	}
+
 	log.Printf("INFO: goroutine uploaded %d emails\n", totalUploaded)
 }
 
@@ -117,9 +124,11 @@ func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWor
 	emailsChan := make(chan models.Email)
 
 	log.Printf("TRACE: spawning %d uploader goroutines\n", numUploaderWorkers)
+
 	var wgUploaders sync.WaitGroup
 	for i := 0; i < numUploaderWorkers; i++ {
 		wgUploaders.Add(1)
+
 		go func() {
 			defer wgUploaders.Done()
 			uploadEmails(emailsChan, bulkUploadQuantity, zincAuth)
@@ -127,9 +136,11 @@ func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWor
 	}
 
 	log.Printf("TRACE: spawning %d parser goroutines\n", numParserWorkers)
+
 	var wgParsers sync.WaitGroup
 	for i := 0; i < numParserWorkers; i++ {
 		wgParsers.Add(1)
+
 		go func() {
 			defer wgParsers.Done()
 			parseEmailFiles(pathsChan, emailsChan)
@@ -145,11 +156,14 @@ func ParseAndUploadEmails(emailsDir string, numUploaderWorkers int, numParserWor
 		if errWalk != nil {
 			fmt.Printf("WARNING: Error walking '%s': %v\n", emailsDir, errWalk)
 		}
+
 		if !entry.IsDir() {
 			pathsChan <- path
 		}
+
 		return nil
 	})
+
 	if err != nil {
 		log.Fatalf("FATAL: Error walking directory '%s': %v", emailsDir, err)
 	}

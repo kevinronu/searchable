@@ -15,6 +15,7 @@ type getAllDocumentsHandler func(http.ResponseWriter, *http.Request, query.Query
 func (zincService ZincService) MiddlewareGetAllDocuments(handler getAllDocumentsHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		querySettings := query.QuerySettings{}
+
 		err := json.NewDecoder(r.Body).Decode(&querySettings)
 		if err != nil {
 			fmt.Println("WARNING: Couldn't decode request body", err)
@@ -36,6 +37,7 @@ type searchDocumentHandler func(http.ResponseWriter, *http.Request, query.Search
 func (zincService ZincService) MiddlewareSearchDocument(handler searchDocumentHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		querySettings := query.SearchQuerySettings{}
+
 		err := json.NewDecoder(r.Body).Decode(&querySettings)
 		if err != nil {
 			fmt.Println("WARNING: Couldn't decode request body", err)

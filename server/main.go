@@ -53,10 +53,12 @@ func main() {
 		log.Printf("INFO: index name %s already exists.\n", indexName)
 		if removeIndexIfExists {
 			log.Printf("INFO: deleting %s index\n", indexName)
+
 			err = zincService.DeleteIndex()
 			if err != nil {
 				log.Fatal("FATAL: Failed to delete index:", err)
 			}
+
 			// Update indexExists value after delete
 			indexExists, err = zincService.CheckIfIndexExists()
 			if err != nil {
@@ -67,10 +69,12 @@ func main() {
 
 	if !indexExists {
 		log.Println("INFO: creating index for:", indexName)
+
 		err = zincService.CreateIndex()
 		if err != nil {
 			log.Fatal("FATAL: Failed to create index:", err)
 		}
+
 		log.Println("INFO: Starting to parse and upload emails at dir:", emailsDir)
 		start := time.Now()
 		routines.ParseAndUploadEmails(emailsDir, numUploaderWorkers, numParserWorkers, bulkUploadQuantity, zincService)
@@ -90,6 +94,7 @@ func main() {
 
 	v1Router := chi.NewRouter()
 
+	// In order to have many api versions
 	v1Router.Get("/healthz", handlerReadiness)
 	v1Router.Get("/err", handlerErr)
 	v1Router.Get("/"+indexName+"/{id}", zincService.MiddlewareIdDocument(zincService.HandlerDocumentsGet))
